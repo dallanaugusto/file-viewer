@@ -1,0 +1,78 @@
+body {
+    background-color: #f8f8f8;
+    color: #444;
+    font-family: "Droid Sans";
+    font-size: .8em;
+    font-style: normal;
+}
+
+body>header, body>footer {
+    border: 0px solid #d8d8d8;
+}
+
+body>header {
+    padding-top: .8em;
+}
+
+body>header>.unespHeadings {
+    display: none;
+}
+
+body>header>.sistemaHeadings, body>header>.unidadeHeadings {
+    font-size: .9em;
+}
+
+body>header>.pageHeadings {
+    background: #eee;
+    border: 1px solid #888;
+    border-width: 1px 0 0 0;
+    font-size: .7em;
+    font-style: italic;
+    margin-top: .8em;
+    padding: .2em 1em;
+    text-align: left;
+}
+
+body>header>.pageHeadings a {
+    border: 0px solid #dde !important;
+    border-radius: 5px !important;
+    display: inline-block !important;
+    margin: 0 .5em;
+    padding: .5em;
+    text-decoration: underline;
+}
+
+body>header>.pageHeadings a:hover {
+    background-color: #ccc;
+}
+
+body>header>.pageHeadings a:first-child {
+    margin-left: 0;
+}
+
+body>nav {
+    position: fixed;
+    right: .3em;
+    top: .3em;
+    z-index: 3;
+}
+
+body>nav>ul>li {
+    font-size: .8em;
+}
+
+#main {
+    border-top: 1px solid #888;
+    position: relative;
+}
+
+body>footer {
+    border-top-width: 1px;
+    display: none;
+    font-size: .8em;
+    text-align: center;
+}
+
+body>footer>address {
+    padding: .3em;
+}

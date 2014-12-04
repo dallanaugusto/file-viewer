@@ -1,0 +1,74 @@
+<?php
+/*use FileViewer\Configuration\Configuration;
+
+$unidadeLabel = Configuration::get("unidade","unidadeLabel");
+$sistemaLabel = Configuration::get("unidade","sistemaLabel");*/
+
+$unidadeLabel = "Campus Experimental de Rosana";
+$sistemaLabel = "Visualização de Arquivos";
+
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <title><?php echo $unidadeLabel." - ".$sistemaLabel; ?></title>
+        <link rel="icon" href="<?php echo $this->basePath(); ?>/css/img/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="<?php echo $this->basePath(); ?>/css/img/favicon.ico" type="image/x-icon">
+        <link href="<?php echo $this->basePath(); ?>/css/main.css" rel="stylesheet" type="text/css">
+        <link href="<?php echo $this->basePath(); ?>/css/specific.css" rel="stylesheet" type="text/css">
+        <link 
+            href="<?php echo $this->basePath(); ?>/css/high.css" rel="stylesheet" type="text/css" 
+            media="screen" 
+        >
+        <link 
+            href="<?php echo $this->basePath(); ?>/css/low.css" rel="stylesheet" type="text/css" 
+            media="screen and (max-width: 800px)"
+        >
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid%20Sans">
+    </head>
+    <body <?php if (isset($mediaViewerIsOpen) && $mediaViewerIsOpen) { ?>class="mediaViewerIsOpen" <?php } ?>>
+        <header>
+            <div class="unespHeadings">
+                <h1>UNIVERSIDADE ESTADUAL PAULISTA</h1>
+                <h2>"JÚLIO DE MESQUITA FILHO"</h2>
+            </div>
+            <div class="sistemaHeadings">
+                <h3><?php echo $sistemaLabel; ?></h3>
+            </div>
+            <div class="unidadeHeadings">
+                <h4><?php echo $unidadeLabel; ?></h4>
+            </div>
+            <div class="pageHeadings">
+                <h2><?php echo $pageTitle; ?></h2>
+            </div>
+        </header>
+        <!--
+        <nav class="interactiveNav">
+            <h2><a href="#url">Menu</a></h2>
+            <ul>
+                <li>
+                    <h3>Submenu 01</h3>
+                    <ul>
+                        <li><a href="#url">Item 01</a></li>
+                        <li><a href="#url">Item 02</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <h3>Submenu 02</h3>
+                    <ul>
+                        <li><a href="#url">Item 01</a></li>
+                        <li><a href="#url">Item 02</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        -->
+        <div id="main">
+<?php echo $this->content; ?>
+        </div>
+        <footer>
+            <address><?php echo $unidadeLabel; ?></address>
+        </footer>
+    </body>
+</html>    

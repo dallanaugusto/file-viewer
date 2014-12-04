@@ -1,0 +1,192 @@
+.message {
+    background-position: 5px 1.3em;
+    background-repeat: no-repeat;
+    font-size: 1.2em;
+    margin: 1em;
+    padding: 1.5em .5em;
+    padding-left: 45px;
+    position: relative;
+}
+
+
+.message .close {
+    font-size: 2em;
+    position: absolute; 
+    right: .5em;
+    top: .2em;
+}
+
+.message header {
+    font-size: 1.5em;
+}
+
+.message p, .message ul {
+    margin-left: 1em;
+    font-size: 1em;
+    font-style: italic;
+    padding: .5em;
+}
+
+.message a, .message a:visited {
+}
+
+.error {
+    background-image: url(ico/error_ico.png); 
+}
+
+.information {
+    color: #468;
+}
+
+.question {
+    color: #995;
+}
+
+.success {
+    color: #8b3;   
+}
+
+.actionLink {
+    display: inline-block;
+}
+
+.actionLink a {
+    background: #eee;
+    border: 1px solid #dde;
+    border-radius: 10px;
+    display: inline-block;
+    padding: 1em .5em;
+    margin: .2em 0;
+}
+
+.actionLink a:hover {
+    background: #ddd;
+}
+
+.media {
+    border: 1px solid #888;
+    border-width: 1px 0;
+    background: #eee;
+    position: relative;
+}
+
+.media .picture {
+    margin: 0 auto;
+    width: 90%;
+}
+
+.media .picture img {
+    border: 1px solid #888;
+    display: block;
+    margin: .5em auto;
+    max-height: 90%;
+    max-width: 85%;
+}
+
+.media .picture .caption {
+    border-top: 1px solid #888;
+    font-weight: bold;
+    padding: .5em;
+    text-align: center;
+}
+
+.media .nav {
+    display: block;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+.media .nav li {
+    position: absolute;
+    height: 100%;
+    width: 5%;
+}
+
+.media .nav li a {
+    display: block;
+    height: 100%;
+    width: 100%;
+    /* Hide the text */
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.media .nav li.previous {
+    left: 0;
+}
+
+.media .nav li.next {
+    right: 0;
+}
+
+.media .nav li.previous a {
+    background: url(ico/leftArrow_ico.png) no-repeat left 1% top 48%;
+    border-right: 1px solid #888;
+}
+
+.media .nav li.next a {
+    background: url(ico/rightArrow_ico.png) no-repeat right 1% top 48%;
+    border-left: 1px solid #888;
+}
+
+.media .nav li.previous a:hover, .media .nav li.next a:hover {
+    background-color: #ddd;
+}
+
+@media screen and (max-height: 479px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 240px !important;
+    }
+}
+
+@media screen and (min-height: 480px) and (max-height: 639px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 320px !important;
+    }
+}
+
+@media screen and (min-height: 640px) and (max-height: 799px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 480px !important;
+    }
+}
+
+@media screen and (min-height: 800px) and (max-height: 959px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 640px !important;
+    }
+}
+
+@media screen and (min-height: 960px) and (max-height: 1119px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 800px !important;
+    }
+}
+
+@media screen and (min-height: 1120px) and (max-height: 1279px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 960px !important;
+    }
+}
+
+@media screen and (min-height: 1280px) and (max-height: 1440px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 1120px !important;
+    }
+}
+
+@media screen and (min-height: 1440px) and (max-height: 1600px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 1280px !important;
+    }
+}
+
+@media screen and (min-height: 1600px) and (max-height: 1760px) {
+    .mediaViewerIsOpen .media .picture img {
+        max-height: 1440px !important;
+    }
+}
