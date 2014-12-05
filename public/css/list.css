@@ -6,6 +6,27 @@
     text-decoration: none;
 }
 
+.itemList>.itemPath {
+    font-size: 1.2em;
+    font-style: italic;
+    margin-top: .8em;
+    padding: .2em 1em;
+    text-align: left;
+}
+
+.itemList>.itemPath a {
+    border: 0px solid #dde !important;
+    border-radius: 5px !important;
+    display: inline-block !important;
+    margin: 0 .5em;
+    padding: .5em;
+    text-decoration: underline;
+}
+
+.itemList>.itemPath a:hover {
+    background-color: #ccc;
+}
+
 .itemList>nav li, .itemList>.items li {
     display: inline-block;
     margin: .5%;

@@ -4,7 +4,8 @@ return array(
     # definir e gerenciar controllers
     'controllers' => array(
         'invokables' => array(
-            'HomeController' => 'FileViewer\Controller\HomeController'
+            'DirectoryController' => 'FileViewer\Controller\DirectoryController',
+            'MediaController' => 'FileViewer\Controller\MediaController',
         ),
     ),
 
@@ -16,7 +17,34 @@ return array(
                 'options'   => array(
                     'route'    => '/',
                     'defaults' => array(
-                        'controller' => 'HomeController',
+                        'controller' => 'DirectoryController',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
+            'directory' => array(
+                'type'      => 'Segment',
+                'options'   => array(
+                    'route'    => '/directory[/:action][/]',
+                    'constraints' => array(
+                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'DirectoryController',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
+            'media' => array(
+                'type'      => 'Segment',
+                'options'   => array(
+                    'route'    => '/media[/:action][/]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MediaController',
                         'action'     => 'index',
                     ),
                 ),

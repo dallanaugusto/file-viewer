@@ -20,7 +20,7 @@ body>nav a {
     padding-top: .7em !important;
 }
 
-body>header>.pageHeadings a {
+body>header>.pageHeadings a, .itemList>.itemPath a {
     padding: 1.5em .5em !important;
 }
 

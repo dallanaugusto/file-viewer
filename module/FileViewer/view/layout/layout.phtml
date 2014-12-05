@@ -1,11 +1,8 @@
 <?php
-/*use FileViewer\Configuration\Configuration;
+use FileViewer\Configuration\Configuration;
 
 $unidadeLabel = Configuration::get("unidade","unidadeLabel");
-$sistemaLabel = Configuration::get("unidade","sistemaLabel");*/
-
-$unidadeLabel = "Campus Experimental de Rosana";
-$sistemaLabel = "Visualização de Arquivos";
+$sistemaLabel = Configuration::get("unidade","sistemaLabel");
 
 ?>
 <!DOCTYPE html>
@@ -40,7 +37,7 @@ $sistemaLabel = "Visualização de Arquivos";
                 <h4><?php echo $unidadeLabel; ?></h4>
             </div>
             <div class="pageHeadings">
-                <h2><?php echo $pageTitle; ?></h2>
+                <h4><?php echo isset($this->pageTitle)? $this->pageTitle: $sistemaLabel; ?></h4>
             </div>
         </header>
         <!--
@@ -66,6 +63,7 @@ $sistemaLabel = "Visualização de Arquivos";
         -->
         <div id="main">
 <?php echo $this->content; ?>
+            
         </div>
         <footer>
             <address><?php echo $unidadeLabel; ?></address>

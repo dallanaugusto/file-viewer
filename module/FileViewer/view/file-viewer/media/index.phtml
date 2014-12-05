@@ -1,0 +1,84 @@
+<?php
+$mediaViewerIsOpen = $this->media != null;
+if ($mediaViewerIsOpen) {
+    $parentLinksHtml = "";
+    foreach ($this->parentLinks as $link) {
+        $itemLink = $link["value"] == "" || $link["value"] == "./"?
+            "./": $this->url("directory")."?id=".$link["value"];
+        $parentLinksHtml .= "/<a href=\"$itemLink\">".$link["label"]."</a>";
+    }
+    $hasNav = $this->directory->getLogicalPath();
+    if ($hasNav) {
+        $directoryLink = $directory? 
+            $this->url("directory")."?id=".$this->directory->getLogicalPath(): "./";
+        $parentLink = $this->directory->getParent()? 
+            $this->url("directory")."?id=".$this->directory->getParent()->getLogicalPath(): "./";
+    }
+}
+?>
+            <div class="itemList">
+<?php
+if ($mediaViewerIsOpen) {
+    $mediaLink = $this->url("home").$media->getRelativePath();
+    $previousMediaLink = $this->url("media")."?id=".$this->previousMedia->getLogicalPath();
+    $nextMediaLink = $this->url("media")."?id=".$this->nextMedia->getLogicalPath();
+?>
+                <div class="media">
+                    <div class="picture">
+                        <img src="<?php echo $mediaLink; ?>" alt="Mídia <?php echo $this->media->getName(); ?>">
+                        <p class="caption"><?php echo $this->media->getName(); ?></p>
+                    </div>
+                    <ul class="nav">
+                        <li class="previous">
+                            <a href="<?php echo $previousMediaLink; ?>"><span>Anterior</span></a>
+                        </li>
+                        <li class="next">
+                            <a href="<?php echo $nextMediaLink; ?>"><span>Posterior</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <h4 class="parentList"><?php echo $parentLinksHtml; ?></h4>
+<?php
+    if ($hasNav) {
+?>
+                <nav>
+<?php
+        if ($this->directory->getParent()) {
+?>                     
+                    <li class="goback"><a href="<?php echo $parentLink; ?>">Voltar n&iacute;vel</a></li>
+<?php
+        }
+        if ($mediaViewerIsOpen) {
+?>                    
+                    <li class="closeMediaViewer"><a href="<?php echo $directoryLink; ?>">Fechar visualizador</a></li>
+<?php
+        }
+?>                                        
+                </nav>
+<?php
+    }
+    if ($this->medias) {
+?>
+                <ul class="items">
+<?php
+        foreach ($this->medias as $media) {
+            $mediaLink = 
+                "?controller=media&amp;action=index&amp;id=".$media->getLogicalPath();
+?>
+                    <li class="<?php echo $media->getType(); ?>File">
+                         <a href="<?php echo $mediaLink; ?>"><?php echo $media->getShortLabel(); ?></a>
+                    </li>
+<?php                    
+        } // foreach ($medias as $media)
+?>
+                </ul>
+<?php
+    } // if ($medias)
+}
+else {
+?>
+                <p class="message error">Esta mídia não existe</p>
+<?php
+}
+?>
+            </div>
