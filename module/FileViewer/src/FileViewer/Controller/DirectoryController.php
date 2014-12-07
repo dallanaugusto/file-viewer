@@ -16,8 +16,7 @@ class DirectoryController extends AbstractActionController
         $directory = Factory::getItem($directoryPath);
         
         // formando caminho de links do diretório
-        $logicalPathHtmlLinks = 
-            self::getLogicalPathHtmlLinks($directory);
+        $logicalPathHtmlLinks = $directory->getAllLogicalPaths();
         
         // obtendo items filhos do diretório
         $items = $directory->getItems();
@@ -26,24 +25,10 @@ class DirectoryController extends AbstractActionController
         $this->layout()->setVariable("pageTitle", $directory->getLogicalPath());        
         return array(
             "directory" => $directory, "items" => $items, 
-            "logicalPathHtmlLinks" => $logicalPathHtmlLinks
+            "logicalPathHtmlLinks" => $logicalPathHtmlLinks,
         );
     }
-
-    public function getLogicalPathHtmlLinks($directory) 
-    {
-        if ($directory->getLogicalPath()) {
-            $parentLogicalPathHtmlLink = self::getLogicalPathHtmlLinks($directory->getParent());
-            $logicalPathHtmlLinks = 
-                "/<a href=\"/directory/?id=".$directory->getLogicalPath().
-                "\">".$directory->getName()."</a>";
-            return $parentLogicalPathHtmlLink.$logicalPathHtmlLinks;
-        }
-        else {
-            return "/<a href=\"./\">Home</a>";
-        }
-    }  
-
+    
 
 }
 

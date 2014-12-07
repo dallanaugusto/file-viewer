@@ -11,39 +11,39 @@ class MediaController extends AbstractActionController
 
     public function indexAction()
     {
-        //$mediaPath = $this->params()->fromRoute('id', "");
+        // obtendo mídia
         $mediaPath = isset($_REQUEST["id"])? $_REQUEST["id"]: null;
         $media = $mediaPath? Factory::getItem($mediaPath): null;
-        if ($media) {
-            $directory = $media->getParent();
-            $links = $directory->getLinksFromLogicalPath();
-            $parentLinks = $directory->getLinksFromLogicalPath();
-            $medias = $directory->getMedias();
-            $numMedias = sizeof($medias);
-            foreach ($medias as $key => $media) {
-                if ($media->getLogicalPath() == $mediaPath) {
-                    $previousMediaId = $key -1;
-                    $nextMediaId = $key + 1;
-                    if ($previousMediaId == -1)
-                        $previousMediaId = $numMedias - 1;
-                    if ($nextMediaId == $numMedias)
-                        $nextMediaId = 0;
-                    $previousMedia = $medias[$previousMediaId];
-                    $nextMedia = $medias[$nextMediaId];
-                    break;
-                }
+        
+        // obtendo diretório
+        $directory = $media->getParent();
+        
+        // formando caminho de links do diretório
+        $logicalPathHtmlLinks = $directory->getAllLogicalPaths();
+        
+        // obtendo items filhos do diretório
+        $items = $directory->getMedias();
+        
+        // obtém mídias anterior e posterior
+        $numItems = sizeof($items);
+        foreach ($items as $key => $item) {
+            if ($item->getLogicalPath() == $mediaPath) {
+                $previousMediaId = $key == 0? $numItems - 1: $key -1;
+                $nextMediaId = $key == $numItems - 1? 0: $key + 1;
+                $previousMedia = $items[$previousMediaId];
+                $nextMedia = $items[$nextMediaId];
+                break;
             }
-            
-            $this->layout()->setVariable("pageTitle", $media->getName());
-            $this->layout()->setVariable("mediaViewerIsOpen", true);
-            return array(
-                "media" => $media, "directory" => $directory, 
-                "previousMedia" => $previousMedia, "nextMedia" => $nextMedia,
-                "medias" => $medias, "parentLinks" => $parentLinks
-            );
         }
-        else
-            return array("media" => null);
+        
+        // variáveis para view
+        $this->layout()->setVariable("pageTitle", $media->getName());
+        $this->layout()->setVariable("mediaViewerIsOpen", true);
+        return array(
+            "media" => $media, "directory" => $directory, 
+            "previousMedia" => $previousMedia, "nextMedia" => $nextMedia,
+            "items" => $items, "logicalPathHtmlLinks" => $logicalPathHtmlLinks,
+        );
     }
 
 

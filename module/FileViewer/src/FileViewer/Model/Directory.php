@@ -84,7 +84,7 @@ class Directory extends Item
     
     public function getUrl() 
     {
-        return "?".Configuration::get("request","directory")."=".$this->getLogicalPath();
+        return "directory/?id=".$this->getLogicalPath();
     }
 
     public function hasMedia() 

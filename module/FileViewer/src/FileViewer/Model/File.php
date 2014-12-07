@@ -43,8 +43,7 @@ class File extends Item
     public function getUrl() 
     {
         return $this->getType() != "image"? 
-            parent::getUrl():
-            "?controller=media&action=index&id=".$this->getLogicalPath();
+            parent::getUrl(): "media/?id=".$this->getLogicalPath();
     }
     
 

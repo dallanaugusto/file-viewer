@@ -11,7 +11,7 @@ abstract class Item
     
     public function __construct($logicalPath) 
     {
-        $this->logicalPath = $logicalPath;
+        $this->logicalPath = $logicalPath == "."? "": $logicalPath;
     }
     
     public function getAbsolutePath() {
@@ -24,15 +24,33 @@ abstract class Item
             ($this->getLogicalPath()? \DIRECTORY_SEPARATOR.$this->getLogicalPath(): "");
     }
     
+    public function getAllLogicalPaths() 
+    {
+        if ($this->getLogicalPath() && $this->getLogicalPath() != "." ) {
+            $parentLogicalPathHtmlLink = $this->getParent()->getAllLogicalPaths();
+            $logicalPathHtmlLinks = array(
+                $this->getLogicalPath() => $this->getName()
+            );
+            return array_merge($parentLogicalPathHtmlLink, $logicalPathHtmlLinks);
+        }
+        else {
+            return array("." => "Home");
+        }
+    } 
+    
     public function getLogicalPath() {
         return $this->logicalPath;
     }
     
     public function getName() {
-        $levels = \explode(\DIRECTORY_SEPARATOR, $this->getLogicalPath());
-        $lastLevel = \sizeof($levels) - 1;
-        $filename = $levels[$lastLevel];
-        return $filename;
+        if ($this->getLogicalPath() && $this->getLogicalPath() != ".") {
+            $levels = \explode(\DIRECTORY_SEPARATOR, $this->getLogicalPath());
+            $lastLevel = \sizeof($levels) - 1;
+            $filename = $levels[$lastLevel];
+            return $filename;
+        }
+        else
+            return "Home";
     }
     
     public function getParent() {

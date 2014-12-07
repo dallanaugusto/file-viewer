@@ -64,19 +64,21 @@
 }
 
 .media {
-    border: 1px solid #888;
-    border-width: 1px 0;
-    background: #eee;
+    border-radius: 5px;
+    border-width: 0;
+    background: #222;
+    margin: .5em;
     position: relative;
 }
 
 .media .picture {
     margin: 0 auto;
+    padding-top: .5em;
     width: 90%;
 }
 
 .media .picture img {
-    border: 1px solid #888;
+    border: 1px solid #000;
     display: block;
     margin: .5em auto;
     max-height: 90%;
@@ -84,7 +86,7 @@
 }
 
 .media .picture .caption {
-    border-top: 1px solid #888;
+    color: #eee;
     font-weight: bold;
     padding: .5em;
     text-align: center;
@@ -125,16 +127,14 @@
 
 .media .nav li.previous a {
     background: url(ico/leftArrow_ico.png) no-repeat left 1% top 48%;
-    border-right: 1px solid #888;
 }
 
 .media .nav li.next a {
     background: url(ico/rightArrow_ico.png) no-repeat right 1% top 48%;
-    border-left: 1px solid #888;
 }
 
 .media .nav li.previous a:hover, .media .nav li.next a:hover {
-    background-color: #ddd;
+    background-color: #333;
 }
 
 @media screen and (max-height: 479px) {
