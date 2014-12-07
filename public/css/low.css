@@ -1,15 +1,3 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : 23/06/2014, 10:21:21
-    Author     : dallan
-*/
-
-
-
 body>header {
     background: url(img/unesp500.png) no-repeat 5px 5px;
     text-align: center;
@@ -18,10 +6,6 @@ body>header {
 body>nav a {
     padding-bottom: .7em !important;
     padding-top: .7em !important;
-}
-
-body>header>.pageHeadings a, .itemList>.itemPath a {
-    padding: 1.5em .5em !important;
 }
 
 .simpleForm input[type="text"], .simpleForm input[type="email"], 

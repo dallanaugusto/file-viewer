@@ -22,7 +22,7 @@ class DirectoryController extends AbstractActionController
         $items = $directory->getItems();
         
         // variáveis para view
-        $this->layout()->setVariable("pageTitle", $directory->getLogicalPath());        
+        $this->layout()->setVariable("pageTitle", $directory->getLogicalPath());   
         return array(
             "directory" => $directory, "items" => $items, 
             "logicalPathHtmlLinks" => $logicalPathHtmlLinks,

@@ -64,10 +64,7 @@
 }
 
 .media {
-    border-radius: 5px;
-    border-width: 0;
     background: #222;
-    margin: .5em;
     position: relative;
 }
 

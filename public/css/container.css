@@ -6,10 +6,6 @@ body {
     font-style: normal;
 }
 
-body>header, body>footer {
-    border: 0px solid #d8d8d8;
-}
-
 body>header {
     padding-top: .8em;
 }
@@ -23,23 +19,22 @@ body>header>.sistemaHeadings, body>header>.unidadeHeadings {
 }
 
 body>header>.pageHeadings {
-    background: #eee;
-    border: 1px solid #888;
-    border-width: 1px 0 0 0;
-    font-size: 1.2em;
-    font-style: italic;
+    background: #222;
+    border: 1px solid #ddd;
+    border-width: 1px 0;
+    color: #eee;
+    font-size: 1.5em;
     margin-top: .8em;
-    padding: .2em 1em;
-    text-align: left;
+    padding: .5em 1em;
+    text-align: center;
 }
 
 body>header>.pageHeadings a {
-    border: 0px solid #dde !important;
-    border-radius: 5px !important;
-    display: inline-block !important;
+    border: 0px solid #ddd;
+    border-radius: 5px;
+    display: inline-block;
     margin: 0 .5em;
     padding: .5em;
-    text-decoration: underline;
 }
 
 body>header>.pageHeadings a:hover {
@@ -62,12 +57,10 @@ body>nav>ul>li {
 }
 
 #main {
-    border-top: 1px solid #888;
     position: relative;
 }
 
 body>footer {
-    border-top-width: 1px;
     display: none;
     font-size: .8em;
     text-align: center;
