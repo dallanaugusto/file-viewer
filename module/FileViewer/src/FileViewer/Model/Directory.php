@@ -48,14 +48,9 @@ class Directory extends Item
     {
         $medias = array();
         $files = $this->getFiles();
-        foreach ($files as $file) {
-            $fileType = $file->getType();
-            switch ($fileType) {
-                case "image": case "video":
-                    $medias[] = $file;
-                    break;
-            }
-        }
+        foreach ($files as $file)
+            if ($file->isMedia())
+                $medias[] = $file;
         return $medias;
     }    
     
@@ -89,15 +84,7 @@ class Directory extends Item
 
     public function hasMedia() 
     {
-        $files = $this->getFiles();
-        foreach ($files as $file) {
-            $fileType = $file->getType();
-            switch ($fileType) {
-                case "image": case "video":
-                    return true;
-            }
-        }
-        return false;
+        return sizeof($this->getMedias()) > 0;
     }
     
 

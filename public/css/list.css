@@ -112,3 +112,7 @@
 .itemList>.items li.imageFile a {
     background-image: url(ico/image_ico.png);    
 }
+
+.itemList>.items li.videoFile a, .itemList>.items li.html5VideoFile a {
+    background-image: url(ico/video_ico.png);    
+}

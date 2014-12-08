@@ -29,6 +29,15 @@ class File extends Item
             case "png": case "jpg": case "jpeg": case "gif":  
                 $type = "image";
                 break; 
+            case "mp3":
+                $type = "html5audio";
+                break; 
+            case "mp4": case "webm":  case "3gp":
+                $type = "html5Video";
+                break; 
+            case "mpg": case "mpeg": case "avi": case "flv":
+                $type = "video";
+                break; 
             case "php": case "htm": case "html": case "asp": case "css": 
             case "js": case "htaccess": case "htpasswd": case "db":              
                 $type = "blocked";
@@ -42,8 +51,12 @@ class File extends Item
     
     public function getUrl() 
     {
-        return $this->getType() != "image"? 
+        return !$this->isMedia()? 
             parent::getUrl(): "media/?id=".$this->getLogicalPath();
+    }
+    
+    public function isMedia() {
+        return $this->getType() == "image" || $this->getType() == "html5Video";
     }
     
 

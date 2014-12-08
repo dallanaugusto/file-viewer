@@ -25,10 +25,30 @@ if ($hasNav) {
 if ($mediaViewerIsOpen) {
 ?>
                 <div class="media">
-                    <div class="picture">
+<?php
+    if ($media->getType() == "image") {
+?>
+                    <figure>
                         <img src="<?php echo $mediaLink; ?>" alt="Mídia <?php echo $this->media->getName(); ?>">
-                        <p class="caption"><?php echo $this->media->getName(); ?></p>
-                    </div>
+                        <figcaption><?php echo $this->media->getName(); ?></figcaption>
+                    </figure>
+<?php
+    }
+    else if ($media->getType() == "html5Video") {
+?>
+                    <video src="<?php echo $mediaLink; ?>" controls>
+                        Seu navegador não suporta o elemento <code>video</code>.
+                    </video>
+<?php
+    }
+    else if ($media->getType() == "html5Audio") {
+?>
+                    <audio src="<?php echo $mediaLink; ?>" controls>
+                        Seu navegador não suporta o elemento <code>video</code>.
+                    </audio>
+<?php
+    }
+?>
                     <ul class="nav">
                         <li class="previous">
                             <a href="<?php echo $previousMediaLink; ?>"><span>Anterior</span></a>
