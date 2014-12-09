@@ -12,7 +12,7 @@ abstract class Factory
         $absolutePath = 
             \getcwd().
             \DIRECTORY_SEPARATOR.
-            "public".
+            Configuration::get("path","publicHttpDirectory").
             \DIRECTORY_SEPARATOR.
             Configuration::get("path","dataDirectory").
             ($logicalPath? \DIRECTORY_SEPARATOR.$logicalPath: "");

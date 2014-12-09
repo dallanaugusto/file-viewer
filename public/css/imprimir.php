@@ -1,0 +1,11 @@
+<?php
+include "constants.php";
+?>
+table#conteudo {
+    width: 570px;
+}
+
+body {
+    background-image: url(imagens/fundo_pagina_interna.gif);
+    background-repeat: no-repeat;
+}

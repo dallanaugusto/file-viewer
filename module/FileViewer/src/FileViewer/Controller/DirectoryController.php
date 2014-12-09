@@ -16,16 +16,20 @@ class DirectoryController extends AbstractActionController
         $directory = Factory::getItem($directoryPath);
         
         // formando caminho de links do diretório
-        $logicalPathHtmlLinks = $directory->getAllLogicalPaths();
+        $allLogicalPaths = $directory->getAllLogicalPaths();
         
         // obtendo items filhos do diretório
         $items = $directory->getItems();
+        
+        // cria thumbnails
+        if ($directory->hasMedia())
+            $directory->createThumbs();
         
         // variáveis para view
         $this->layout()->setVariable("pageTitle", $directory->getLogicalPath());   
         return array(
             "directory" => $directory, "items" => $items, 
-            "logicalPathHtmlLinks" => $logicalPathHtmlLinks,
+            "allLogicalPaths" => $allLogicalPaths,
         );
     }
     

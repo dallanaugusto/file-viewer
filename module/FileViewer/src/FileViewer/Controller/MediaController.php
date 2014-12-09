@@ -19,10 +19,14 @@ class MediaController extends AbstractActionController
         $directory = $media->getParent();
         
         // formando caminho de links do diretório
-        $logicalPathHtmlLinks = $directory->getAllLogicalPaths();
+        $allLogicalPaths = $directory->getAllLogicalPaths();
         
         // obtendo items filhos do diretório
         $items = $directory->getMedias();
+        
+        // cria thumbnails
+        if ($directory->hasMedia())
+            $directory->createThumbs();
         
         // obtém mídias anterior e posterior
         $numItems = sizeof($items);
@@ -42,7 +46,7 @@ class MediaController extends AbstractActionController
         return array(
             "media" => $media, "directory" => $directory, 
             "previousMedia" => $previousMedia, "nextMedia" => $nextMedia,
-            "items" => $items, "logicalPathHtmlLinks" => $logicalPathHtmlLinks,
+            "items" => $items, "allLogicalPaths" => $allLogicalPaths,
         );
     }
 

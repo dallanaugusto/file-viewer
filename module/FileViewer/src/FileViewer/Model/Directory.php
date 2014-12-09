@@ -2,8 +2,42 @@
 
 namespace FileViewer\Model;
 
+use FileViewer\Configuration\Configuration;
+
 class Directory extends Item 
 {
+    
+    public function createThumbs()
+    {
+        $files = $this->getMedias();
+        if ($files) {
+            // definitions
+            $thumbDirPath = 
+                \getcwd().\DIRECTORY_SEPARATOR.
+                Configuration::get("path","publicHttpDirectory").
+                \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
+                \DIRECTORY_SEPARATOR.$this->getLogicalPath();
+            // create thumb directory if it doesn't exist
+            if (!file_exists($thumbDirPath)) {
+                mkdir($thumbDirPath, 0777, true);
+                chmod($thumbDirPath, 0777);
+            }
+            foreach ($files as $file)
+                if ($file->getType() == "image") {
+                    // definitions
+                    $thumbPath = 
+                        \getcwd().\DIRECTORY_SEPARATOR.
+                        Configuration::get("path","publicHttpDirectory").
+                        \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
+                        \DIRECTORY_SEPARATOR.$file->getLogicalPath();
+
+                    // create thumb if it doesn't exist
+                    if (!file_exists($thumbPath))
+                        imagejpeg($file->getThumb(), $thumbPath);
+                    
+                }
+        }
+    }
     
     public function getFiles() 
     {
@@ -79,7 +113,7 @@ class Directory extends Item
     
     public function getUrl() 
     {
-        return "directory/?id=".$this->getLogicalPath();
+        return str_replace(' ','%20',"directory/?id=".$this->getLogicalPath());
     }
 
     public function hasMedia() 

@@ -2,22 +2,22 @@
 $mediaViewerIsOpen = $this->media != null;
 if ($mediaViewerIsOpen) {
     $mediaLink = $this->url("home").$media->getRelativePath();
-    $previousMediaLink = $this->url("media")."?id=".$this->previousMedia->getLogicalPath();
-    $nextMediaLink = $this->url("media")."?id=".$this->nextMedia->getLogicalPath();
+    $previousMediaLink = $this->url("home").$this->previousMedia->getUrl();
+    $nextMediaLink = $this->url("home").$this->nextMedia->getUrl();
 }
 
 $itemPath = "";
-    foreach ($this->logicalPathHtmlLinks as $path => $name)
-        $itemPath .= "/<a href=\"".$this->url("directory")."?id=".$path."\">".$name."</a>";
+foreach ($this->allLogicalPaths as $path => $name)
+    $itemPath .= "/<a href=\"".$this->url("home").$path."\">".$name."</a>";
     
 $hasNav = $this->directory->getLogicalPath();
 if ($hasNav) {
     $directoryLink = $directory? 
-        $this->url("directory")."?id=".$this->directory->getLogicalPath(): ".";
+        $this->url("home").$this->directory->getUrl(): ".";
     $parentLink = $this->directory->getParent() && $this->directory->getParent()->getLogicalPath()?
-        $this->url("directory")."?id=".$this->directory->getParent()->getLogicalPath(): ".";
+        $this->url("home").$this->directory->getParent()->getUrl(): ".";
     $firstMediaLink = $this->directory->hasMedia()? 
-        $this->url("media")."?id=".$this->directory->getFirstMedia()->getLogicalPath(): null;
+        $this->url("home").$this->directory->getFirstMedia()->getUrl(): null;
 }
 ?>
             <div class="itemList">
@@ -36,14 +36,14 @@ if ($mediaViewerIsOpen) {
     }
     else if ($media->getType() == "html5Video") {
 ?>
-                    <video src="<?php echo $mediaLink; ?>" controls>
+                    <video src="<?php echo $mediaLink; ?>" controls autoplay>
                         Seu navegador não suporta o elemento <code>video</code>.
                     </video>
 <?php
     }
     else if ($media->getType() == "html5Audio") {
 ?>
-                    <audio src="<?php echo $mediaLink; ?>" controls>
+                    <audio src="<?php echo $mediaLink; ?>" controls autoplay>
                         Seu navegador não suporta o elemento <code>video</code>.
                     </audio>
 <?php
@@ -63,23 +63,25 @@ if ($mediaViewerIsOpen) {
 if ($hasNav) {
 ?>
                 <nav>
+                    <ul>
 <?php
     if ($this->directory->getParent()) {
 ?>                     
-                    <li class="goback"><a href="<?php echo $parentLink; ?>">Voltar n&iacute;vel</a></li>
+                        <li class="goback"><a href="<?php echo $parentLink; ?>">Voltar n&iacute;vel</a></li>
 <?php
     }
     if ($mediaViewerIsOpen) {
 ?>                    
-                    <li class="closeMediaViewer"><a href="<?php echo $directoryLink; ?>">Fechar visualizador</a></li>
+                        <li class="closeMediaViewer"><a href="<?php echo $directoryLink; ?>">Fechar visualizador</a></li>
 <?php
     }
     if ($this->directory->hasMedia() && !$mediaViewerIsOpen) {
 ?>                    
-                    <li class="openMediaViewer"><a href="<?php echo $firstMediaLink; ?>">Abrir visualizador</a></li>
+                        <li class="openMediaViewer"><a href="<?php echo $firstMediaLink; ?>">Abrir visualizador</a></li>
 <?php
     }
-?>                                        
+?>                      
+                    </ul>
                 </nav>
 <?php
 }
@@ -91,13 +93,26 @@ if ($this->items) {
                 <ul class="items">
 <?php
     foreach ($this->items as $item) {
-        $itemLink = $this->url("home").$item->getUrl();
+        $itemLink = $this->url("home").$item->getUrl();        
+        if ($item->getType() == "image") {
+            $thumbLink = $this->url("home").$item->getThumbUrl();
 ?>
-                    <li class="<?php echo $item->getType(); ?>File">
-                         <a href="<?php echo $itemLink; ?>"><?php echo $item->getShortLabel(); ?></a>
+                    <li class="<?php echo $item->getType(); ?>File thumb">
+                        <figure>
+                            <a href="<?php echo $itemLink; ?>"><img src="<?php echo $thumbLink; ?>" alt="Mídia <?php echo $item->getName(); ?>"></a>
+                            <figcaption><a href="<?php echo $itemLink; ?>"><?php echo $item->getName(); ?></a></figcaption>
+                        </figure>
                     </li>
-<?php                    
-    } // foreach ($items as $item)
+<?php                  
+        }
+        else {
+?>
+                    <li class="<?php echo $item->getType(); ?>File notThumb">
+                        <a href="<?php echo $itemLink; ?>"><?php echo $item->getShortLabel(); ?></a>
+                    </li>
+<?php         
+        }
+    }
 ?>
                 </ul>
 <?php

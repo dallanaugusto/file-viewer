@@ -27,11 +27,11 @@ abstract class Item
     public function getAllLogicalPaths() 
     {
         if ($this->getLogicalPath() && $this->getLogicalPath() != "." ) {
-            $parentLogicalPathHtmlLink = $this->getParent()->getAllLogicalPaths();
-            $logicalPathHtmlLinks = array(
-                $this->getLogicalPath() => $this->getName()
+            $parentLogicalPath = $this->getParent()->getAllLogicalPaths();
+            $allLogicalPaths = array(
+                $this->getUrl() => $this->getName()
             );
-            return array_merge($parentLogicalPathHtmlLink, $logicalPathHtmlLinks);
+            return array_merge($parentLogicalPath, $allLogicalPaths);
         }
         else {
             return array("." => "Home");
