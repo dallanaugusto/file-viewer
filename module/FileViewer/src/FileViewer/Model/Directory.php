@@ -6,11 +6,18 @@ use FileViewer\Configuration\Configuration;
 
 class Directory extends Item 
 {
+    private $files;
+    private $items;
+    private $medias;
+    private $subDirectories;
     
-    public function createThumbs()
+    public function createThumbs($currentMediaIndex)
     {
-        $files = $this->getMedias();
-        if ($files) {
+        $pageSize = Configuration::get("custom","pageSize");
+        $firstThumb = $currentMediaIndex%$pageSize == 0?
+            $currentMediaIndex: $currentMediaIndex - ($currentMediaIndex%$pageSize);
+        $medias = $this->getMedias($currentMediaIndex);
+        foreach ($medias as $media) {
             // definitions
             $thumbDirPath = 
                 \getcwd().\DIRECTORY_SEPARATOR.
@@ -22,42 +29,43 @@ class Directory extends Item
                 mkdir($thumbDirPath, 0777, true);
                 chmod($thumbDirPath, 0777);
             }
-            foreach ($files as $file)
-                if ($file->getType() == "image") {
-                    // definitions
-                    $thumbPath = 
-                        \getcwd().\DIRECTORY_SEPARATOR.
-                        Configuration::get("path","publicHttpDirectory").
-                        \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
-                        \DIRECTORY_SEPARATOR.$file->getLogicalPath();
+            if ($media->getType() == "image") {
+                // definitions
+                $thumbPath = 
+                    \getcwd().\DIRECTORY_SEPARATOR.
+                    Configuration::get("path","publicHttpDirectory").
+                    \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
+                    \DIRECTORY_SEPARATOR.$media->getLogicalPath();
 
-                    // create thumb if it doesn't exist
-                    if (!file_exists($thumbPath))
-                        imagejpeg($file->getThumb(), $thumbPath);
-                    
-                }
+                // create thumb if it doesn't exist
+                if (!file_exists($thumbPath))
+                    imagejpeg($media->getThumb(), $thumbPath);
+
+            }
         }
     }
     
     public function getFiles() 
     {
-        $itemNames = \scandir($this->getAbsolutePath(), 0);
-        $files = array();
-        foreach ($itemNames as $itemName) {
-            if ($itemName != "." && $itemName != ".." && \substr($itemName,0,1) != ".") {
-                $absoluteItemName = $this->getAbsolutePath()."/".$itemName;
-                if (!\is_dir($absoluteItemName)) {
-                    $item = Factory::getItem(
-                        $this->getLogicalPath().
-                        \DIRECTORY_SEPARATOR.
-                        $itemName
-                    );
-                    if ($item->getType() != "blocked")
-                        $files[] = $item;
+        if (!$this->files) {
+            $itemNames = \scandir($this->getAbsolutePath(), 0);
+            $this->files = array();
+            foreach ($itemNames as $itemName) {
+                if ($itemName != "." && $itemName != ".." && \substr($itemName,0,1) != ".") {
+                    $absoluteItemName = $this->getAbsolutePath()."/".$itemName;
+                    if (!\is_dir($absoluteItemName)) {
+                        $item = Factory::getItem(
+                            $this->getLogicalPath().
+                            \DIRECTORY_SEPARATOR.
+                            $itemName
+                        );
+                        if ($item->getType() != "blocked")
+                            $this->files[] = $item;
+                    }
                 }
             }
         }
-        return $files;
+        return $this->files;
     }   
 
     public function getFirstMedia() 
@@ -68,42 +76,84 @@ class Directory extends Item
     
     public function getItems() 
     {
-        $subDirectories = $this->getSubDirectories();
-        $files = $this->getFiles();
-        $items = array();
-        foreach ($subDirectories as $directory)
-            $items[] = $directory;
-        foreach ($files as $file)
-            $items[] = $file;
-        return $items;
+        if (!$this->items) {
+            $subDirectories = $this->getSubDirectories();
+            $files = $this->getFiles();
+            $this->items = array();
+            foreach ($subDirectories as $directory)
+                $this->items[] = $directory;
+            foreach ($files as $file)
+                $this->items[] = $file;
+        }
+        return $this->items;
     }
     
-    public function getMedias() 
+    public function getMediaIndex($media) 
     {
-        $medias = array();
-        $files = $this->getFiles();
-        foreach ($files as $file)
-            if ($file->isMedia())
-                $medias[] = $file;
+        $medias = $this->getMedias();
+        for ($i = 0; $i < $medias; $i++)
+            if ($media->getLogicalPath() == $medias[$i]->getLogicalPath())
+                return $i;
+    }  
+    
+    public function getMedia($mediaIndex) 
+    {
+        $medias = $this->getMedias();
+        return $medias[$mediaIndex];
+    }  
+    
+    public function getMedias($currentMediaIndex = -1) 
+    {
+        if ($currentMediaIndex != -1) {
+            $pageSize = Configuration::get("custom","pageSize");
+            $firstThumb = $currentMediaIndex%$pageSize == 0?
+                $currentMediaIndex: $currentMediaIndex - ($currentMediaIndex%$pageSize);
+            $allMedias = $this->getMedias();
+            $numMedias = sizeof($allMedias);
+            $medias = array();
+            for ($i = 0; $i < $pageSize; $i++) {
+                if ($i+$firstThumb >= $numMedias)
+                    break;
+                $medias[] = $allMedias[$i+$firstThumb];
+            }
+            return $medias;
+        }
+        else {
+            if (!$this->medias) {
+                $this->medias = array();
+                $files = $this->getFiles();
+                foreach ($files as $file)
+                    if ($file->isMedia())
+                        $this->medias[] = $file;
+            }
+            return $this->medias;
+        }
         return $medias;
+    }   
+    
+    public function getNumMedias() 
+    {
+        return sizeof($this->getMedias());
     }    
     
     public function getSubDirectories() 
     {
-        $itemNames = \scandir($this->getAbsolutePath(), 0);
-        $subDirectories = array();
-        foreach ($itemNames as $itemName) {
-            if ($itemName != "." && $itemName != ".." && \substr($itemName,0,1) != ".") {
-                $absoluteItemName = $this->getAbsolutePath()."/".$itemName;
-                if (\is_dir($absoluteItemName))
-                    $subDirectories[] = Factory::getItem(
-                        $this->getLogicalPath().
-                        ($this->getLogicalPath()? \DIRECTORY_SEPARATOR: "").
-                        $itemName
-                    );
+        if (!$this->subDirectories) {
+            $itemNames = \scandir($this->getAbsolutePath(), 0);
+            $this->subDirectories = array();
+            foreach ($itemNames as $itemName) {
+                if ($itemName != "." && $itemName != ".." && \substr($itemName,0,1) != ".") {
+                    $absoluteItemName = $this->getAbsolutePath()."/".$itemName;
+                    if (\is_dir($absoluteItemName))
+                        $this->subDirectories[] = Factory::getItem(
+                            $this->getLogicalPath().
+                            ($this->getLogicalPath()? \DIRECTORY_SEPARATOR: "").
+                            $itemName
+                        );
+                }
             }
         }
-        return $subDirectories;
+        return $this->subDirectories;
     } 
 
     public function getType() 

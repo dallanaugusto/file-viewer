@@ -1,9 +1,10 @@
 <?php
 $mediaViewerIsOpen = $this->media != null;
 if ($mediaViewerIsOpen) {
-    $mediaLink = $this->url("home").$media->getRelativePath();
+    $mediaLink = $this->url("home").$this->media->getRelativePath();
     $previousMediaLink = $this->url("home").$this->previousMedia->getUrl();
     $nextMediaLink = $this->url("home").$this->nextMedia->getUrl();
+    $numItems = sizeof($this->allItems);
 }
 
 $itemPath = "";
@@ -49,14 +50,31 @@ if ($mediaViewerIsOpen) {
 <?php
     }
 ?>
-                    <ul class="nav">
-                        <li class="previous">
-                            <a href="<?php echo $previousMediaLink; ?>"><span>Anterior</span></a>
-                        </li>
-                        <li class="next">
-                            <a href="<?php echo $nextMediaLink; ?>"><span>Posterior</span></a>
-                        </li>
-                    </ul>
+                    <nav>
+                        <ul class="mediaNav">
+                            <li class="previous">
+                                <a href="<?php echo $previousMediaLink; ?>"><span>Anterior</span></a>
+                            </li>
+                            <li class="next">
+                                <a href="<?php echo $nextMediaLink; ?>"><span>Posterior</span></a>
+                            </li>
+                        </ul>
+                        <ul class="pageNav">
+<?php
+        for ($i = 0; $i < $numItems; $i++) {
+            if ($i%$this->pageSize == 0) {
+                $isCurrentPage = 
+                    $i <= $this->currentMediaIndex &&
+                    $this->currentMediaIndex < $i + $this->pageSize;
+                $pageLink = $this->url("home")."media/?id=".$this->allItems[$i]->getLogicalPath();
+?>                     
+                            <li<?php if ($isCurrentPage) { ?> class="current"<?php } ?>><a href="<?php echo $pageLink; ?>"><?php echo $i/$this->pageSize; ?></a></li>
+<?php
+            }
+        }
+?>                      
+                        </ul>
+                    </nav>
                 </div>
 <?php
 }

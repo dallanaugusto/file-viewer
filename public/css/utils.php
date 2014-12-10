@@ -66,11 +66,17 @@ include "constants.php";
     text-align: center;
 }
 
-.media .nav {
+.media .mediaNav {
     position: relative;
 }
 
-.media .nav li {
+.media .pageNav {
+    border-top: 1px dashed <?php echo $defaultLightColor; ?>;
+    padding: .5em 0;
+    text-align: center;
+}
+
+.media .mediaNav li {
     color: <?php echo $defaultLightColor; ?>;
     position: absolute;
     height: 44px;
@@ -78,7 +84,13 @@ include "constants.php";
     bottom: 44px;
 }
 
-.media .nav li a {
+.media .pageNav li {
+    color: <?php echo $defaultLightColor; ?>;
+    display: inline-block;
+    margin: .5em 0;
+}
+
+.media .mediaNav li a {
     display: block;
     height: 100%;
     width: 100%;
@@ -87,27 +99,40 @@ include "constants.php";
     overflow: hidden;
 }
 
-.media .nav li.previous {
+.media .pageNav li a {
+    color: <?php echo $defaultLightColor; ?>;
+    padding: .5em;
+}
+
+.media .pageNav li.current a {
+    background: <?php echo $defaultLightHoverColor; ?>;
+    border: 0px solid <?php echo $defaultLightHoverColor; ?>;
+    border-radius: 3px;
+    color: <?php echo $defaultDarkColor; ?>;
+    margin: .5em;
+}
+
+.media .mediaNav li.previous {
     left: 0;
 }
 
-.media .nav li.next {
+.media .mediaNav li.next {
     right: 0;
 }
 
-.media .nav li.previous a {
+.media .mediaNav li.previous a {
     background: url(ico/lightLeftArrow_ico.png) no-repeat left 1% top 48%;
 }
 
-.media .nav li.next a {
+.media .mediaNav li.next a {
     background: url(ico/lightRightArrow_ico.png) no-repeat right 1% top 48%;
 }
 
-.media .nav li.previous a:hover {
+.media .mediaNav li.previous a:hover {
     background-image: url(ico/darkLeftArrow_ico.png);
 } 
 
-.media .nav li.next a:hover {
+.media .mediaNav li.next a:hover {
     background-image: url(ico/darkRightArrow_ico.png);
 }
 

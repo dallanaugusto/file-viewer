@@ -21,10 +21,6 @@ class DirectoryController extends AbstractActionController
         // obtendo items filhos do diretório
         $items = $directory->getItems();
         
-        // cria thumbnails
-        if ($directory->hasMedia())
-            $directory->createThumbs();
-        
         // variáveis para view
         $this->layout()->setVariable("pageTitle", $directory->getLogicalPath());   
         return array(
