@@ -54,11 +54,14 @@ include "constants.php";
 }
 
 .itemList>.items li.thumb figure {
-    background: <?php echo $defaultLightColor; ?>;
-    border: 0px solid <?php echo $defaultDarkColor; ?>;
-    border-radius: 5px;
     padding: .5em;
     text-align: center;
+}
+
+.itemList>.items li.thumb.current figure {
+    background: <?php echo $defaultLightHoverColor; ?>;
+    border: 0px solid <?php echo $defaultLightHoverColor; ?>;
+    border-radius: 5px;
 }
 
 .itemList>.items li.thumb figure img {

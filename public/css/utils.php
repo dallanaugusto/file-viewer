@@ -77,11 +77,11 @@ include "constants.php";
 }
 
 .media .mediaNav li {
+    bottom: 200px;
     color: <?php echo $defaultLightColor; ?>;
     position: absolute;
     height: 44px;
     width: 44px;
-    bottom: 44px;
 }
 
 .media .pageNav li {

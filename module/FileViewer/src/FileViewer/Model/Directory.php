@@ -86,6 +86,12 @@ class Directory extends Item
                 $this->items[] = $file;
         }
         return $this->items;
+    }  
+    
+    public function getMedia($mediaIndex) 
+    {
+        $medias = $this->getMedias();
+        return $medias[$mediaIndex];
     }
     
     public function getMediaIndex($media) 
@@ -94,12 +100,6 @@ class Directory extends Item
         for ($i = 0; $i < $medias; $i++)
             if ($media->getLogicalPath() == $medias[$i]->getLogicalPath())
                 return $i;
-    }  
-    
-    public function getMedia($mediaIndex) 
-    {
-        $medias = $this->getMedias();
-        return $medias[$mediaIndex];
     }  
     
     public function getMedias($currentMediaIndex = -1) 

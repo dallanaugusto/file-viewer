@@ -112,10 +112,11 @@ if ($this->items) {
 <?php
     foreach ($this->items as $item) {
         $itemLink = $this->url("home").$item->getUrl();        
-        if ($item->getType() == "image") {
+        if ($mediaViewerIsOpen && $item->getType() == "image") {
             $thumbLink = $this->url("home").$item->getThumbUrl();
+            $isCurrentItem = $this->media && $item->getLogicalPath() == $this->media->getLogicalPath();
 ?>
-                    <li class="<?php echo $item->getType(); ?>File thumb">
+                    <li class="<?php echo $item->getType(); ?>File thumb<?php if ($isCurrentItem) echo " current"; ?>">
                         <figure>
                             <a href="<?php echo $itemLink; ?>"><img src="<?php echo $thumbLink; ?>" alt="Mídia <?php echo $item->getName(); ?>"></a>
                             <figcaption><a href="<?php echo $itemLink; ?>"><?php echo $item->getName(); ?></a></figcaption>

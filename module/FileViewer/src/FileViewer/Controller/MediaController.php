@@ -38,15 +38,12 @@ class MediaController extends AbstractActionController
             $directory->createThumbs($currentMediaIndex);
         
         // mídias anteriores e posteriores
-        foreach ($items as $key => $item) {
-            if ($item->getLogicalPath() == $mediaPath) {
-                $previousMediaId = $key == 0? $numItems - 1: $key -1;
-                $nextMediaId = $key == $numItems - 1? 0: $key + 1;
-                $previousMedia = $allItems[$previousMediaId];
-                $nextMedia = $allItems[$nextMediaId];
-                break;
-            }
-        }
+        $previousMediaId = $currentMediaIndex == 0? 
+            $numItems - 1: $currentMediaIndex -1;
+        $nextMediaId = $currentMediaIndex == $numItems - 1? 
+            0: $currentMediaIndex + 1;
+        $previousMedia = $directory->getMedia($previousMediaId);
+        $nextMedia = $directory->getMedia($nextMediaId);
         
         // variáveis para view
         $this->layout()->setVariable("pageTitle", $media->getName());
