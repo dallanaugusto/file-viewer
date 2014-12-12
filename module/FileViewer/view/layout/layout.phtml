@@ -1,15 +1,16 @@
 <?php
 use FileViewer\Configuration\Configuration;
 
-$unidadeLabel = Configuration::get("unidade","unidadeLabel");
-$sistemaLabel = Configuration::get("unidade","sistemaLabel");
+$organizationLabel = Configuration::get("organization","organizationLabel");
+$applicationLabel = Configuration::get("organization","applicationLabel");
+$developerLabel = Configuration::get("organization","developerLabel");
 
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
         <meta charset="utf-8">
-        <title><?php echo $unidadeLabel." - ".$sistemaLabel; ?></title>
+        <title><?php echo $organizationLabel." - ".$applicationLabel; ?></title>
         <link rel="icon" href="<?php echo $this->basePath(); ?>/css/img/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="<?php echo $this->basePath(); ?>/css/img/favicon.ico" type="image/x-icon">
         <link href="<?php echo $this->basePath(); ?>/css/main.php" rel="stylesheet" type="text/css">
@@ -22,6 +23,13 @@ $sistemaLabel = Configuration::get("unidade","sistemaLabel");
             media="screen and (max-width: 800px)"
         >
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid%20Sans">
+<?php 
+if (isset($mediaViewerIsOpen) && $mediaViewerIsOpen) { 
+?>
+        <script src="<?php echo $this->basePath(); ?>/js/mediaViewerIsOpen.js"></script>
+<?php 
+} 
+?>        
     </head>
     <body <?php if (isset($mediaViewerIsOpen) && $mediaViewerIsOpen) { ?>class="mediaViewerIsOpen" <?php } ?>>
         <header>
@@ -29,14 +37,14 @@ $sistemaLabel = Configuration::get("unidade","sistemaLabel");
                 <h1>UNIVERSIDADE ESTADUAL PAULISTA</h1>
                 <h2>"JÚLIO DE MESQUITA FILHO"</h2>
             </div>
-            <div class="sistemaHeadings">
-                <h3><?php echo $sistemaLabel; ?></h3>
+            <div class="applicationHeadings">
+                <h3><?php echo $applicationLabel; ?></h3>
             </div>
-            <div class="unidadeHeadings">
-                <h4><?php echo $unidadeLabel; ?></h4>
+            <div class="organizationHeadings">
+                <h4><?php echo $organizationLabel; ?></h4>
             </div>
             <div class="pageHeadings">
-                <h4><?php echo isset($this->pageTitle) && $this->pageTitle? $this->pageTitle: $sistemaLabel; ?></h4>
+                <h4><?php echo isset($this->pageTitle) && $this->pageTitle? $this->pageTitle: $applicationLabel; ?></h4>
             </div>
         </header>
         <!--
@@ -63,9 +71,17 @@ $sistemaLabel = Configuration::get("unidade","sistemaLabel");
         <div id="main">
 <?php echo $this->content; ?>
             
-        </div>
+        </div><!-- div#main -->
         <footer>
-            <address><?php echo $unidadeLabel; ?></address>
+            <address><?php echo $organizationLabel."<br>".$developerLabel; ?></address>
+            <p id="validators">
+                <a href="http://validator.w3.org/check?uri=<?php echo $this->serverUrl(true); ?>">
+                    <img src="<?php echo $this->basePath(); ?>/css/img/valid-html5.png" alt="Valid HTML5">
+                </a>
+                <a href="http://jigsaw.w3.org/css-validator/check/referer">
+                    <img src="<?php echo $this->basePath(); ?>/css/img/valid-css3.gif" alt="Valid CSS3" />
+                </a>
+            </p>
         </footer>
     </body>
 </html>    

@@ -15,7 +15,7 @@ body>header>.unespHeadings {
     display: none;
 }
 
-body>header>.sistemaHeadings, body>header>.unidadeHeadings {
+body>header>.applicationHeadings, body>header>.organizationHeadings {
     font-size: .8em;
 }
 
@@ -44,5 +44,19 @@ body>nav>ul>li {
 }
 
 body>footer {
-    display: none;
+    position: relative;
+}
+
+body>footer>address {
+    border-top: 1px dashed <?php echo $defaultDarkColor; ?>;
+    font-style: normal;
+    font-weight: bold;
+    text-align: center;
+    padding: .5em 0;
+}
+
+#validators {
+    position: absolute;
+    right: .5em;
+    top: .5em;
 }

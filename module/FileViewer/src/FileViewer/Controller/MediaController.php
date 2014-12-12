@@ -5,19 +5,19 @@ namespace FileViewer\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 
 use FileViewer\Configuration\Configuration;
-use FileViewer\Model\Factory;
+use FileViewer\Model\FileDao;
 
 class MediaController extends AbstractActionController
 {
 
     public function indexAction()
     {
-        // obtendo mídia
+        // obtendo caminho da mídia e tamanho da paginação
         $mediaPath = isset($_REQUEST["id"])? $_REQUEST["id"]: null;
-        $media = $mediaPath? Factory::getItem($mediaPath): null;
-        
-        // obtendo paginação
         $pageSize = Configuration::get("custom", "pageSize");
+        
+        // obtendo mídia
+        $media = FileDao::getNewObject($mediaPath);
         
         // obtendo diretório
         $directory = $media->getParent();
@@ -29,13 +29,13 @@ class MediaController extends AbstractActionController
         $currentMediaIndex = $directory->getMediaIndex($media);
         
         // obtendo items filhos do diretório
-        $items = $directory->getMedias($currentMediaIndex);
+        $items = $directory->getMediasByMediaIndex($currentMediaIndex);
         $allItems = $directory->getMedias();
         $numItems = sizeof($allItems);
         
         // cria thumbnails        
         if ($directory->hasMedia())
-            $directory->createThumbs($currentMediaIndex);
+            $directory->createThumbsByIndex($currentMediaIndex);
         
         // mídias anteriores e posteriores
         $previousMediaId = $currentMediaIndex == 0? 
@@ -49,11 +49,10 @@ class MediaController extends AbstractActionController
         $this->layout()->setVariable("pageTitle", $media->getName());
         $this->layout()->setVariable("mediaViewerIsOpen", true);
         return array(
-            "media" => $media, "pageSize" => $pageSize, "directory" => $directory, 
+            "media" => $media, "directory" => $directory, "items" => $items, 
+            "allItems" => $allItems, "allLogicalPaths" => $allLogicalPaths, 
+            "currentMediaIndex" => $currentMediaIndex, "pageSize" => $pageSize, 
             "previousMedia" => $previousMedia, "nextMedia" => $nextMedia,
-            "items" => $items, "allItems" => $allItems, 
-            "currentMediaIndex" => $currentMediaIndex, 
-            "allLogicalPaths" => $allLogicalPaths,
         );
     }
 

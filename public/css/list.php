@@ -89,6 +89,10 @@ include "constants.php";
     background-image: url(ico/error_ico.png);    
 }
 
+.itemList>.items li.notThumb.audioFile a, .itemList>.items li.html5AudioFile a {
+    background-image: url(ico/audio_ico.png);    
+}
+
 .itemList>.items li.notThumb.compactedFile a {
     background-image: url(ico/compacted_ico.png);    
 }

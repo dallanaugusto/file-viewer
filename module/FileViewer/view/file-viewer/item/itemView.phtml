@@ -31,7 +31,7 @@ if ($mediaViewerIsOpen) {
 ?>
                     <figure>
                         <img src="<?php echo $mediaLink; ?>" alt="Mídia <?php echo $this->media->getName(); ?>">
-                        <figcaption><?php echo $this->media->getName(); ?></figcaption>
+                        <figcaption><?php echo "Mídia ".$this->currentMediaIndex." de ".$numItems; ?></figcaption>
                     </figure>
 <?php
     }
@@ -53,29 +53,35 @@ if ($mediaViewerIsOpen) {
                     <nav>
                         <ul class="mediaNav">
                             <li class="previous">
-                                <a href="<?php echo $previousMediaLink; ?>"><span>Anterior</span></a>
+                                <a href="<?php echo $previousMediaLink; ?>" id="previousMediaLink">Anterior</a>
                             </li>
                             <li class="next">
-                                <a href="<?php echo $nextMediaLink; ?>"><span>Posterior</span></a>
+                                <a href="<?php echo $nextMediaLink; ?>" id="nextMediaLink">Posterior</a>
                             </li>
                         </ul>
+<?php
+        if ($numItems > $pageSize) {
+?>
                         <ul class="pageNav">
 <?php
-        for ($i = 0; $i < $numItems; $i++) {
-            if ($i%$this->pageSize == 0) {
-                $isCurrentPage = 
-                    $i <= $this->currentMediaIndex &&
-                    $this->currentMediaIndex < $i + $this->pageSize;
-                $pageLink = $this->url("home")."media/?id=".$this->allItems[$i]->getLogicalPath();
+            for ($i = 0; $i < $numItems; $i++) {
+                if ($i%$this->pageSize == 0) {
+                    $isCurrentPage = 
+                        $i <= $this->currentMediaIndex &&
+                        $this->currentMediaIndex < $i + $this->pageSize;
+                    $pageLink = $this->url("home")."media/?id=".\urlencode($this->allItems[$i]->getLogicalPath());
 ?>                     
                             <li<?php if ($isCurrentPage) { ?> class="current"<?php } ?>><a href="<?php echo $pageLink; ?>"><?php echo $i/$this->pageSize; ?></a></li>
 <?php
+                }
             }
-        }
 ?>                      
-                        </ul>
+                        </ul><!-- ul.pageNav -->
+<?php
+        }
+?>                        
                     </nav>
-                </div>
+                </div><!-- div.media -->
 <?php
 }
 if ($hasNav) {
@@ -133,8 +139,8 @@ if ($this->items) {
         }
     }
 ?>
-                </ul>
+                </ul><!-- ul.items -->
 <?php
 }
 ?>
-            </div>
+            </div><!-- div.itemList -->

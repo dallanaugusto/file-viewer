@@ -6,169 +6,69 @@ use FileViewer\Configuration\Configuration;
 
 class Directory extends Item 
 {
-    private $files;
-    private $items;
-    private $medias;
-    private $subDirectories;
-    
-    public function createThumbs($currentMediaIndex)
+    public function createThumbsByIndex($currentMediaIndex)
     {
-        $pageSize = Configuration::get("custom","pageSize");
-        $firstThumb = $currentMediaIndex%$pageSize == 0?
-            $currentMediaIndex: $currentMediaIndex - ($currentMediaIndex%$pageSize);
-        $medias = $this->getMedias($currentMediaIndex);
-        foreach ($medias as $media) {
-            // definitions
-            $thumbDirPath = 
-                \getcwd().\DIRECTORY_SEPARATOR.
-                Configuration::get("path","publicHttpDirectory").
-                \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
-                \DIRECTORY_SEPARATOR.$this->getLogicalPath();
-            // create thumb directory if it doesn't exist
-            if (!file_exists($thumbDirPath)) {
-                mkdir($thumbDirPath, 0777, true);
-                chmod($thumbDirPath, 0777);
-            }
-            if ($media->getType() == "image") {
-                // definitions
-                $thumbPath = 
-                    \getcwd().\DIRECTORY_SEPARATOR.
-                    Configuration::get("path","publicHttpDirectory").
-                    \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
-                    \DIRECTORY_SEPARATOR.$media->getLogicalPath();
-
-                // create thumb if it doesn't exist
-                if (!file_exists($thumbPath))
-                    imagejpeg($media->getThumb(), $thumbPath);
-
-            }
-        }
+        $this->getDao()->createThumbsByMediaIndex($currentMediaIndex);
     }
     
     public function getFiles() 
     {
-        if (!$this->files) {
-            $itemNames = \scandir($this->getAbsolutePath(), 0);
-            $this->files = array();
-            foreach ($itemNames as $itemName) {
-                if ($itemName != "." && $itemName != ".." && \substr($itemName,0,1) != ".") {
-                    $absoluteItemName = $this->getAbsolutePath()."/".$itemName;
-                    if (!\is_dir($absoluteItemName)) {
-                        $item = Factory::getItem(
-                            $this->getLogicalPath().
-                            \DIRECTORY_SEPARATOR.
-                            $itemName
-                        );
-                        if ($item->getType() != "blocked")
-                            $this->files[] = $item;
-                    }
-                }
-            }
-        }
-        return $this->files;
+        return $this->getDao()->getFiles();
     }   
 
     public function getFirstMedia() 
     {
-        $medias = $this->getMedias();
-        return isset($medias[0])? $medias[0]: null;
+        return $this->getDao()->getFirstMedia();
     }
     
     public function getItems() 
     {
-        if (!$this->items) {
-            $subDirectories = $this->getSubDirectories();
-            $files = $this->getFiles();
-            $this->items = array();
-            foreach ($subDirectories as $directory)
-                $this->items[] = $directory;
-            foreach ($files as $file)
-                $this->items[] = $file;
-        }
-        return $this->items;
+        return \array_merge($this->getSubDirectories(), $this->getFiles());
     }  
     
     public function getMedia($mediaIndex) 
     {
-        $medias = $this->getMedias();
-        return $medias[$mediaIndex];
+        return $this->getDao()->getMedia($mediaIndex);
     }
     
     public function getMediaIndex($media) 
     {
-        $medias = $this->getMedias();
-        for ($i = 0; $i < $medias; $i++)
-            if ($media->getLogicalPath() == $medias[$i]->getLogicalPath())
-                return $i;
+        return $this->getDao()->getMediaIndex($media);
     }  
     
-    public function getMedias($currentMediaIndex = -1) 
+    public function getMedias() 
     {
-        if ($currentMediaIndex != -1) {
-            $pageSize = Configuration::get("custom","pageSize");
-            $firstThumb = $currentMediaIndex%$pageSize == 0?
-                $currentMediaIndex: $currentMediaIndex - ($currentMediaIndex%$pageSize);
-            $allMedias = $this->getMedias();
-            $numMedias = sizeof($allMedias);
-            $medias = array();
-            for ($i = 0; $i < $pageSize; $i++) {
-                if ($i+$firstThumb >= $numMedias)
-                    break;
-                $medias[] = $allMedias[$i+$firstThumb];
-            }
-            return $medias;
-        }
-        else {
-            if (!$this->medias) {
-                $this->medias = array();
-                $files = $this->getFiles();
-                foreach ($files as $file)
-                    if ($file->isMedia())
-                        $this->medias[] = $file;
-            }
-            return $this->medias;
-        }
-        return $medias;
+        return $this->getDao()->getMedias();
+    }
+    
+    public function getMediasByMediaIndex($currentMediaIndex) 
+    {
+        return $this->getDao()->getMediasByMediaIndex($currentMediaIndex);
     }   
     
     public function getNumMedias() 
     {
         return sizeof($this->getMedias());
-    }    
+    }   
     
     public function getSubDirectories() 
     {
-        if (!$this->subDirectories) {
-            $itemNames = \scandir($this->getAbsolutePath(), 0);
-            $this->subDirectories = array();
-            foreach ($itemNames as $itemName) {
-                if ($itemName != "." && $itemName != ".." && \substr($itemName,0,1) != ".") {
-                    $absoluteItemName = $this->getAbsolutePath()."/".$itemName;
-                    if (\is_dir($absoluteItemName))
-                        $this->subDirectories[] = Factory::getItem(
-                            $this->getLogicalPath().
-                            ($this->getLogicalPath()? \DIRECTORY_SEPARATOR: "").
-                            $itemName
-                        );
-                }
-            }
-        }
-        return $this->subDirectories;
+        return $this->getDao()->getSubDirectories();
     } 
 
     public function getType() 
     {
-        return "directory";
+        return $this->getDao()->getType();
     } 
     
     public function getUrl() 
     {
-        return str_replace(' ','%20',"directory/?id=".$this->getLogicalPath());
+        return $this->getDao()->getUrl();
     }
 
     public function hasMedia() 
     {
-        return sizeof($this->getMedias()) > 0;
+        return $this->getDao()->hasMedia();
     }
     
 

@@ -47,16 +47,18 @@ include "constants.php";
     outline: 0;
 }
 
-.media video {
-    margin: 0 auto;
+.media audio, .media video, .media .video {
     padding-top: .5em;
     border: 1px solid <?php echo $defaultDarkColor; ?>;
     display: block;
-    margin: .5em auto;
-    max-height: 90%;
-    max-width: 85%;
+    margin: 0 auto;
     padding-bottom: .5em;
     outline: 0;
+}
+
+.media video, .media .video {
+    max-height: 90%;
+    max-width: 85%;
 }
 
 .media figcaption {
@@ -77,7 +79,7 @@ include "constants.php";
 }
 
 .media .mediaNav li {
-    bottom: 200px;
+    bottom: 20px;
     color: <?php echo $defaultLightColor; ?>;
     position: absolute;
     height: 44px;
@@ -121,11 +123,11 @@ include "constants.php";
 }
 
 .media .mediaNav li.previous a {
-    background: url(ico/lightLeftArrow_ico.png) no-repeat left 1% top 48%;
+    background: url(ico/lightLeftArrow_ico.png) no-repeat left 1% top 1%;
 }
 
 .media .mediaNav li.next a {
-    background: url(ico/lightRightArrow_ico.png) no-repeat right 1% top 48%;
+    background: url(ico/lightRightArrow_ico.png) no-repeat right 1% top 1%;
 }
 
 .media .mediaNav li.previous a:hover {
@@ -137,55 +139,55 @@ include "constants.php";
 }
 
 @media screen and (max-height: 479px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 240px !important;
     }
 }
 
 @media screen and (min-height: 480px) and (max-height: 639px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 320px !important;
     }
 }
 
 @media screen and (min-height: 640px) and (max-height: 799px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 480px !important;
     }
 }
 
 @media screen and (min-height: 800px) and (max-height: 959px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 640px !important;
     }
 }
 
 @media screen and (min-height: 960px) and (max-height: 1119px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 800px !important;
     }
 }
 
 @media screen and (min-height: 1120px) and (max-height: 1279px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 960px !important;
     }
 }
 
 @media screen and (min-height: 1280px) and (max-height: 1440px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 1120px !important;
     }
 }
 
 @media screen and (min-height: 1440px) and (max-height: 1600px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 1280px !important;
     }
 }
 
 @media screen and (min-height: 1600px) and (max-height: 1760px) {
-    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video {
+    .mediaViewerIsOpen .media figure img, .mediaViewerIsOpen .media video, .media .video {
         max-height: 1440px !important;
     }
 }

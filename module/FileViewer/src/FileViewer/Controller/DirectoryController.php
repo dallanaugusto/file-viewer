@@ -4,16 +4,18 @@ namespace FileViewer\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
-use FileViewer\Model\Factory;
+use FileViewer\Model\DirectoryDao;
 
 class DirectoryController extends AbstractActionController
 {
 
     public function indexAction()
     {
-        // obtendo diretório
+        // obtendo caminho do diretório
         $directoryPath = isset($_REQUEST["id"])? $_REQUEST["id"]: null;
-        $directory = Factory::getItem($directoryPath);
+        
+        // obtendo diretório
+        $directory = DirectoryDao::getNewObject($directoryPath);
         
         // formando caminho de links do diretório
         $allLogicalPaths = $directory->getAllLogicalPaths();
