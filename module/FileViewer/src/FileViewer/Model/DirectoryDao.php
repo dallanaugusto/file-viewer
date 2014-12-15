@@ -79,27 +79,11 @@ class DirectoryDao extends ItemDao
         return new DirectoryDao($logicalPath);
     }
     
-    public static function getNewObject($logicalPath)
-    {
-        $dao = self::getInstance($logicalPath);   
-    
-        $itemArray = $dao->getItemDescription($logicalPath);
-        
-        if ($itemArray["type"] == "directory") {
-            $directory = new Directory($logicalPath);
-            $dao->setObject($directory);
-            $directory->setDao($dao);
-            return $directory;
-        }
-            throw new \Exception("O item $logicalPath não é um diretório");
-    }
-    
     public function getItems() 
     {
         $itemsArray = 
             $this->getFileSystemPersistence()
                 ->getItemsFromDirectory($this->getAbsolutePath());
-        $items = array();
         foreach ($itemsArray as $item)
             if (\substr($item["name"],0,1) != ".")
                 $items[] = $this->getItem(
@@ -152,6 +136,21 @@ class DirectoryDao extends ItemDao
             $medias[] = $allMedias[$i+$firstThumb];
         }
         return $medias;
+    }
+    
+    public static function getNewObject($logicalPath)
+    {
+        $dao = self::getInstance($logicalPath);   
+    
+        $itemArray = $dao->getItemDescription($logicalPath);
+        
+        if ($itemArray["type"] == "directory") {
+            $directory = new Directory($logicalPath);
+            $dao->setObject($directory);
+            $directory->setDao($dao);
+            return $directory;
+        }
+            throw new \Exception("O item $logicalPath não é um diretório");
     }
     
     public function getSubDirectories()

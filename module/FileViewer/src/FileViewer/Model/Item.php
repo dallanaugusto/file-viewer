@@ -29,12 +29,20 @@ abstract class Item extends AbstractModel
         return $this->getDao()->getParent();
     }
     
+    public function getPermissions() {
+        return $this->getDao()->getPermissions();
+    }
+    
     public function getRelativePath() {
         return $this->getDao()->getRelativePath();
     }
     
     public function getShortLabel() {
         return $this->getDao()->getShortLabel();
+    }
+    
+    public function getSize() {
+        return $this->getDao()->getSize();
     }
 
     abstract public function getType();

@@ -10,6 +10,7 @@ abstract class ItemDao extends AbstractDao
 {
     private $fileSystemPersistence;
     private $logicalPath;
+    private $description;
     
     protected function __construct($logicalPath)
     {
@@ -19,15 +20,7 @@ abstract class ItemDao extends AbstractDao
     }
     
     public function getAbsolutePath() {
-        return 
-            \getcwd().
-            \DIRECTORY_SEPARATOR.
-            "public".
-            \DIRECTORY_SEPARATOR.
-            Configuration::get("path","dataDirectory").
-            ($this->getLogicalPath()? 
-                \DIRECTORY_SEPARATOR.$this->getLogicalPath(): ""
-            );
+        return $this->description["absolutePath"];
     }
     
     public function getAllLogicalPaths() 
@@ -64,10 +57,10 @@ abstract class ItemDao extends AbstractDao
         if (!$this->getFileSystemPersistence()->isValidItem($absolutePath))
             throw new \Exception("O item $logicalPath não existe");
         
-        $itemArray = 
+        $this->description = 
             $this->getFileSystemPersistence()->getItemByAbsolutePath($absolutePath);
         
-        return $itemArray;
+        return $this->description;
     } 
     
     public function getLogicalPath() {
@@ -76,10 +69,7 @@ abstract class ItemDao extends AbstractDao
     
     public function getName() {
         if ($this->getLogicalPath() && $this->getLogicalPath() != ".") {
-            $levels = \explode(\DIRECTORY_SEPARATOR, $this->getLogicalPath());
-            $lastLevel = \sizeof($levels) - 1;
-            $filename = $levels[$lastLevel];
-            return $filename;
+            return $this->description["name"];
         }
         else
             return "Home";
@@ -87,16 +77,23 @@ abstract class ItemDao extends AbstractDao
     
     public function getParent() {
         $lastSlashPos = strrpos($this->getLogicalPath(), "/");
-        $parentPath = \substr($this->getLogicalPath(), 0, $lastSlashPos);
-        return DirectoryDao::getNewObject($parentPath);
+        $logicalParentPath = \substr($this->getLogicalPath(), 0, $lastSlashPos);
+        return DirectoryDao::getNewObject($logicalParentPath);
+    }
+    
+    public function getPermissions() {
+        return $this->description["permissions"];
+    }
+    
+    public function getSize() {
+        return $this->description["size"];
     }
     
     public function getRelativePath() {
         return str_replace(
             ' ','%20',
             Configuration::get("path","dataDirectory").
-            \DIRECTORY_SEPARATOR.
-            $this->getLogicalPath()
+            \DIRECTORY_SEPARATOR.$this->getLogicalPath()
         );
     }
     

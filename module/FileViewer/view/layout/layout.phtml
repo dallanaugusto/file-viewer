@@ -75,6 +75,9 @@ if (isset($mediaViewerIsOpen) && $mediaViewerIsOpen) {
         <footer>
             <address><?php echo $organizationLabel."<br>".$developerLabel; ?></address>
             <p id="validators">
+                <a href="http://framework.zend.com/">
+                    <img src="<?php echo $this->basePath(); ?>/css/img/zf2.png" alt="Zend Framework 2" />
+                </a>
                 <a href="http://validator.w3.org/check?uri=<?php echo $this->serverUrl(true); ?>">
                     <img src="<?php echo $this->basePath(); ?>/css/img/valid-html5.png" alt="Valid HTML5">
                 </a>

@@ -2,67 +2,33 @@
 
 namespace FileViewer\Persistence;
 
-use FileViewer\Configuration\Configuration;
-use FileViewer\Model\Directory;
-use FileViewer\Model\File;
-
 class FileSystemPersistence {
-    
-    public function createThumbsFromDirectoryAndItemIndex(Directory $directory, $currentMediaIndex)
-    {
-        $pageSize = Configuration::get("custom","pageSize");
-        $firstThumb = $currentMediaIndex%$pageSize == 0?
-            $currentMediaIndex: $currentMediaIndex - ($currentMediaIndex%$pageSize);
-        $medias = $this->getMediasFromDirectory($directory, $currentMediaIndex);
-        foreach ($medias as $media) {
-            // definitions
-            $thumbDirPath = 
-                \getcwd().\DIRECTORY_SEPARATOR.
-                Configuration::get("path","publicHttpDirectory").
-                \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
-                \DIRECTORY_SEPARATOR.$directory->getLogicalPath();
-            // create thumb directory if it doesn't exist
-            if (!file_exists($thumbDirPath)) {
-                mkdir($thumbDirPath, 0777, true);
-                chmod($thumbDirPath, 0777);
-            }
-            if ($media->getType() == "image") {
-                // definitions
-                $thumbPath = 
-                    \getcwd().\DIRECTORY_SEPARATOR.
-                    Configuration::get("path","publicHttpDirectory").
-                    \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
-                    \DIRECTORY_SEPARATOR.$media->getLogicalPath();
-
-                // create thumb if it doesn't exist
-                if (!file_exists($thumbPath))
-                    imagejpeg($media->getThumb(), $thumbPath);
-
-            }
-        }
-    } 
     
     public function getItemByAbsolutePath($absolutePath) 
     {
         if (!$this->isValidItem($absolutePath))
             return null;
-        else {
-            $levels = \explode(\DIRECTORY_SEPARATOR, $absolutePath);
-            $lastLevel = \sizeof($levels) - 1;
-            $itemName = $levels[$lastLevel];
-            if (\is_dir($absolutePath)) {
-                $type = "directory";
-                $extension = "";
-            }
-            else {
-                $type = "file";
-                $pathInfo = \pathinfo($absolutePath);
-                $extension = isset($pathInfo["extension"])?
-                    \strtolower($pathInfo["extension"]): "";
-            }
+        else {   
+            // find the last occurence of a slash
+            $lastSlashPos = strrpos($absolutePath, "/");
+            // find the item infos
+            $parentPath = \dirname($absolutePath);
+            $name = \substr($absolutePath, $lastSlashPos+1);
+            $permissions = substr(sprintf('%o', fileperms($absolutePath)), -4);
+            $mtime = filemtime($absolutePath);
+            $size = \filesize($absolutePath);
+            // get the item type
+            $type = \is_dir($absolutePath)? "directory": "file";
+            $isFile = $type == "file";
+            // get the item extension
+            $pathInfo = \pathinfo($absolutePath);
+            $extension = $isFile && isset($pathInfo["extension"])?
+                \strtolower($pathInfo["extension"]): "";
+            // return the item array
             return array(
-                "type" => $type, "absolutePath" => $absolutePath, 
-                "name" => $itemName, "extension" => $extension,
+                "absolutePath" => $absolutePath, "extension" => $extension,
+                "mtime" => $mtime, "name" => $name, "parentPath" => $parentPath, 
+                "permissions" => $permissions, "size" => $size, "type" => $type, 
             );
         }
     }
@@ -104,4 +70,6 @@ class FileSystemPersistence {
     {            
         return \file_exists($absolutePath);
     }
+    
+    
 }
