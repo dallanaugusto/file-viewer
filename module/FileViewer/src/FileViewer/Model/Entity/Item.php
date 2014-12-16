@@ -1,11 +1,8 @@
 <?php
 
-namespace FileViewer\Model;
+namespace FileViewer\Model\Entity;
 
-use FileViewer\Configuration\Configuration;
-use FileViewer\Model\AbstractModel;
-
-abstract class Item extends AbstractModel
+abstract class Item extends AbstractEntity
 {
     
     public function getAbsolutePath() {
@@ -33,8 +30,8 @@ abstract class Item extends AbstractModel
         return $this->getDao()->getPermissions();
     }
     
-    public function getRelativePath() {
-        return $this->getDao()->getRelativePath();
+    public function getDataPath() {
+        return $this->getDao()->getDataPath();
     }
     
     public function getShortLabel() {

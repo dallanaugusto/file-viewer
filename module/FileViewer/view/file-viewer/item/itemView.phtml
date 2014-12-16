@@ -1,7 +1,7 @@
 <?php
 $mediaViewerIsOpen = $this->media != null;
 if ($mediaViewerIsOpen) {
-    $mediaLink = $this->url("home").$this->media->getRelativePath();
+    $mediaLink = $this->url("home").$this->media->getDataPath();
     $previousMediaLink = $this->url("home").$this->previousMedia->getUrl();
     $nextMediaLink = $this->url("home").$this->nextMedia->getUrl();
     $numItems = sizeof($this->allItems);

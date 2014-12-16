@@ -1,6 +1,6 @@
 <?php
 
-namespace FileViewer\Model;
+namespace FileViewer\Model\Dao;
 
 abstract class AbstractDao {
     

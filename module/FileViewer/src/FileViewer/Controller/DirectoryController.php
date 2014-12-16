@@ -4,7 +4,7 @@ namespace FileViewer\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
-use FileViewer\Model\DirectoryDao;
+use FileViewer\Model\Dao\DirectoryDao;
 
 class DirectoryController extends AbstractActionController
 {
@@ -12,7 +12,7 @@ class DirectoryController extends AbstractActionController
     public function indexAction()
     {
         // obtendo caminho do diretório
-        $directoryPath = isset($_REQUEST["id"])? $_REQUEST["id"]: null;
+        $directoryPath = \filter_input(\INPUT_GET,"id");
         
         // obtendo diretório
         $directory = DirectoryDao::getNewObject($directoryPath);

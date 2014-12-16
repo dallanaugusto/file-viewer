@@ -5,7 +5,7 @@ namespace FileViewer\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 
 use FileViewer\Configuration\Configuration;
-use FileViewer\Model\FileDao;
+use FileViewer\Model\Dao\FileDao;
 
 class MediaController extends AbstractActionController
 {
@@ -13,7 +13,7 @@ class MediaController extends AbstractActionController
     public function indexAction()
     {
         // obtendo caminho da mídia e tamanho da paginação
-        $mediaPath = isset($_REQUEST["id"])? $_REQUEST["id"]: null;
+        $mediaPath = \filter_input(\INPUT_GET,"id");
         $pageSize = Configuration::get("custom", "pageSize");
         
         // obtendo mídia

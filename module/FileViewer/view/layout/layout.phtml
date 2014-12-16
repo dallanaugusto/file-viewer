@@ -14,10 +14,7 @@ $developerLabel = Configuration::get("organization","developerLabel");
         <link rel="icon" href="<?php echo $this->basePath(); ?>/css/img/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="<?php echo $this->basePath(); ?>/css/img/favicon.ico" type="image/x-icon">
         <link href="<?php echo $this->basePath(); ?>/css/main.php" rel="stylesheet" type="text/css">
-        <link 
-            href="<?php echo $this->basePath(); ?>/css/high.php" rel="stylesheet" type="text/css" 
-            media="screen" 
-        >
+        <link href="<?php echo $this->basePath(); ?>/css/high.php" rel="stylesheet" type="text/css" media="screen">
         <link 
             href="<?php echo $this->basePath(); ?>/css/low.php" rel="stylesheet" type="text/css" 
             media="screen and (max-width: 800px)"
@@ -26,6 +23,7 @@ $developerLabel = Configuration::get("organization","developerLabel");
 <?php 
 if (isset($mediaViewerIsOpen) && $mediaViewerIsOpen) { 
 ?>
+        <script src="<?php echo $this->basePath(); ?>/js/jquery.min.js"></script>
         <script src="<?php echo $this->basePath(); ?>/js/mediaViewerIsOpen.js"></script>
 <?php 
 } 
@@ -47,27 +45,6 @@ if (isset($mediaViewerIsOpen) && $mediaViewerIsOpen) {
                 <h4><?php echo isset($this->pageTitle) && $this->pageTitle? $this->pageTitle: $applicationLabel; ?></h4>
             </div>
         </header>
-        <!--
-        <nav class="interactiveNav">
-            <h2><a href="#url">Menu</a></h2>
-            <ul>
-                <li>
-                    <h3>Submenu 01</h3>
-                    <ul>
-                        <li><a href="#url">Item 01</a></li>
-                        <li><a href="#url">Item 02</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <h3>Submenu 02</h3>
-                    <ul>
-                        <li><a href="#url">Item 01</a></li>
-                        <li><a href="#url">Item 02</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-        -->
         <div id="main">
 <?php echo $this->content; ?>
             

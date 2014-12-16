@@ -1,21 +1,32 @@
 <?php
 
-namespace FileViewer\Model;
+namespace FileViewer\Model\Dao;
 
 use FileViewer\Configuration\Configuration;
-use FileViewer\Model\AbstractDao;
 use FileViewer\Persistence\FileSystemPersistence;
 
 abstract class ItemDao extends AbstractDao
 {
-    private $fileSystemPersistence;
+    private $dataDirectoryPersistence;
+    private $thumbDirectoryPersistence;
     private $logicalPath;
     private $description;
     
     protected function __construct($logicalPath)
     {
         parent::__construct();
-        $this->fileSystemPersistence = new FileSystemPersistence();
+        $this->dataDirectoryPersistence = new FileSystemPersistence(
+            \getcwd().
+            \DIRECTORY_SEPARATOR.
+            Configuration::get("path","publicHttpDirectory").
+            \DIRECTORY_SEPARATOR.
+            Configuration::get("path","dataDirectory")
+        );
+        $this->thumbDirectoryPersistence = new FileSystemPersistence(
+            \getcwd().\DIRECTORY_SEPARATOR.
+            Configuration::get("path","publicHttpDirectory").
+            \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory")
+        );
         $this->logicalPath = $logicalPath;
     }
     
@@ -37,28 +48,20 @@ abstract class ItemDao extends AbstractDao
         }
     } 
     
-    public function getFileSystemPersistence()
+    public function getDataDirectoryPersistence()
     {
-        return $this->fileSystemPersistence;
+        return $this->dataDirectoryPersistence;
     }
     
     abstract protected static function getInstance($logicalPath);
     
     public function getItemDescription($logicalPath) 
     {
-        $absolutePath = 
-            \getcwd().
-            \DIRECTORY_SEPARATOR.
-            Configuration::get("path","publicHttpDirectory").
-            \DIRECTORY_SEPARATOR.
-            Configuration::get("path","dataDirectory").
-            ($logicalPath? \DIRECTORY_SEPARATOR.$logicalPath: "");
-            
-        if (!$this->getFileSystemPersistence()->isValidItem($absolutePath))
+        if (!$this->getDataDirectoryPersistence()->isValidItem($logicalPath))
             throw new \Exception("O item $logicalPath não existe");
         
         $this->description = 
-            $this->getFileSystemPersistence()->getItemByAbsolutePath($absolutePath);
+            $this->getDataDirectoryPersistence()->getItemByRelativePath($logicalPath);
         
         return $this->description;
     } 
@@ -85,16 +88,16 @@ abstract class ItemDao extends AbstractDao
         return $this->description["permissions"];
     }
     
-    public function getSize() {
-        return $this->description["size"];
-    }
-    
-    public function getRelativePath() {
+    public function getDataPath() {
         return str_replace(
             ' ','%20',
             Configuration::get("path","dataDirectory").
             \DIRECTORY_SEPARATOR.$this->getLogicalPath()
         );
+    }
+    
+    public function getSize() {
+        return $this->description["size"];
     }
     
     public function getShortLabel() {
@@ -103,12 +106,20 @@ abstract class ItemDao extends AbstractDao
             \substr($this->getName(), sizeof($this->getName()) - 10, 10): 
             $this->getName();
     }
+    
+    public function getThumbDirectoryPersistence()
+    {
+        return $this->thumbDirectoryPersistence;
+    }
 
     abstract public function getType();
     
     public function getUrl() {
-        $url = str_replace(' ','%20',$this->getRelativePath());
-        return $url;
+        return str_replace(
+            ' ','%20',
+            Configuration::get("path","dataDirectory").
+            \DIRECTORY_SEPARATOR.$this->getLogicalPath()
+        );
     }
     
     

@@ -4,9 +4,18 @@ namespace FileViewer\Persistence;
 
 class FileSystemPersistence {
     
-    public function getItemByAbsolutePath($absolutePath) 
+    private $rootPath;
+    
+    public function __construct($rootPath = null)
     {
-        if (!$this->isValidItem($absolutePath))
+        $this->rootPath = $rootPath;
+    }
+    
+    public function getItemByRelativePath($relativePath) 
+    {
+        $absolutePath = $this->makeAbsolutePath($relativePath);
+        // verify if item is valid
+        if (!$this->isValidItem($relativePath))
             return null;
         else {   
             // find the last occurence of a slash
@@ -33,9 +42,9 @@ class FileSystemPersistence {
         }
     }
     
-    public function getFilesFromDirectory($absolutePath) 
-    {        
-        $items = $this->getItemsFromDirectory($absolutePath);
+    public function getFilesFromDirectory($relativePath) 
+    {    
+        $items = $this->getItemsFromDirectory($relativePath);
         $files = array();
         foreach ($items as $item)
             if ($item["type"] == "file")
@@ -43,22 +52,60 @@ class FileSystemPersistence {
         return $files;
     }  
     
-    public function getItemsFromDirectory($absolutePath) 
+    public function getJpegImageFileAndResize($relativePath, $maxSideSize)
     {
+        $absolutePath = $this->makeAbsolutePath($relativePath);
+        if ($this->isValidItem($relativePath)) {
+            // load image and get image size
+            $img = \imagecreatefromjpeg($absolutePath);
+
+            $width = \imagesx($img);
+            $height = \imagesy($img);
+
+            // calculate thumbnail size
+            $newWidth = $width >= $height?
+                $maxSideSize: \floor($width*($maxSideSize/$height));
+            $newHeight = $width < $height?
+                $maxSideSize: \floor($height*($maxSideSize/$width));
+            
+            // create a new temporary image
+            $newImage = \imagecreatetruecolor($newWidth, $newHeight);
+            
+            // copy and resize old image into new image
+            \imagecopyresized(
+                $newImage, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height
+            );
+            // returning the new image
+            return $newImage;
+        }
+    }
+    
+    public function getItemsFromDirectory($relativePath) 
+    {
+        $absolutePath = $this->makeAbsolutePath($relativePath);
         $itemNames = \scandir($absolutePath, 0);
-        $items = array();
+        $directories = array();
+        $files = array();
         foreach ($itemNames as $itemName) {
             if ($itemName != "." && $itemName != "..") {
-                $absoluteItemName = $absolutePath."/".$itemName;
-                $items[] = $this->getItemByAbsolutePath($absoluteItemName);
+                $relativeItemName = $relativePath."/".$itemName;
+                if (\is_dir($absolutePath))
+                    $directories[] = $this->getItemByRelativePath($relativeItemName);
+                else
+                    $files[] = $this->getItemByRelativePath($relativeItemName);
             }
         }
-        return $items;
-    }      
+        return \array_merge($directories, $files);
+    } 
     
-    public function getSubDirectoriesFromDirectory($absolutePath) 
+    public function getRootPath()
     {
-        $items = $this->getItemsFromDirectory($absolutePath);
+        return $this->rootPath;
+    }
+    
+    public function getSubDirectoriesFromDirectory($relativePath) 
+    {
+        $items = $this->getItemsFromDirectory($relativePath);
         $subDirectories = array();
         foreach ($items as $item)
             if ($item["type"] == "directory")
@@ -66,9 +113,27 @@ class FileSystemPersistence {
         return $subDirectories;
     }   
     
-    public function isValidItem($absolutePath)
-    {            
+    public function isValidItem($relativePath)
+    {        
+        $absolutePath = $this->makeAbsolutePath($relativePath);
         return \file_exists($absolutePath);
+    }
+    
+    public function makeAbsolutePath($relativePath)
+    {
+        return $this->getRootPath()."/".$relativePath;
+    }
+    
+    public function makeDirectory($relativePath, $mode = 0777, $recursive = false)
+    {
+        $absolutePath = $this->makeAbsolutePath($relativePath);
+        return \mkdir($absolutePath,$mode,$recursive);
+    }
+    
+    public function makeJpegImageFile($relativePath, $jpegImage)
+    {
+        $absolutePath = $this->makeAbsolutePath($relativePath);
+        return \imagejpeg($jpegImage, $absolutePath);
     }
     
     

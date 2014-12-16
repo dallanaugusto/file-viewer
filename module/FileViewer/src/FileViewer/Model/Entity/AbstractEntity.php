@@ -1,8 +1,8 @@
 <?php
 
-namespace FileViewer\Model;
+namespace FileViewer\Model\Entity;
 
-abstract class AbstractModel {
+abstract class AbstractEntity {
     
     private $dao;
     

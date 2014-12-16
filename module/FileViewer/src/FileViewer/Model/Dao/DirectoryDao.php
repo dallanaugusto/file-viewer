@@ -1,48 +1,37 @@
 <?php
 
-namespace FileViewer\Model;
+namespace FileViewer\Model\Dao;
 
 use FileViewer\Configuration\Configuration;
-use FileViewer\Model\FileDao;
-use FileViewer\Model\ItemDao;
-use FileViewer\Persistence\FileSystemPersistence;
+use FileViewer\Model\Entity\Directory;
 
 class DirectoryDao extends ItemDao
 {
     
     private $files;
+    private $items;
     private $medias;
     private $subDirectories;
     
     public function createThumbsByMediaIndex($currentMediaIndex)
     {
-        $pageSize = Configuration::get("custom","pageSize");
-        $firstThumb = $currentMediaIndex%$pageSize == 0?
-            $currentMediaIndex: $currentMediaIndex - ($currentMediaIndex%$pageSize);
         $medias = $this->getMediasByMediaIndex($currentMediaIndex);
         foreach ($medias as $media) {
-            // definitions
-            $thumbDirPath = 
-                \getcwd().\DIRECTORY_SEPARATOR.
-                Configuration::get("path","publicHttpDirectory").
-                \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
-                \DIRECTORY_SEPARATOR.$this->getLogicalPath();
             // create thumb directory if it doesn't exist
-            if (!file_exists($thumbDirPath)) {
-                mkdir($thumbDirPath, 0777, true);
-                chmod($thumbDirPath, 0777);
-            }
+            if (!$this->getThumbDirectoryPersistence()->isValidItem($this->getLogicalPath()))
+                if (!$this->getThumbDirectoryPersistence()->makeDirectory(
+                    $this->getLogicalPath(), 0777, true
+                ))
+                    throw new \Exception("Não foi possível criar o diretório ".$this->getLogicalPath()."!");
             if ($media->getType() == "image") {
-                // definitions
-                $thumbPath = 
-                    \getcwd().\DIRECTORY_SEPARATOR.
-                    Configuration::get("path","publicHttpDirectory").
-                    \DIRECTORY_SEPARATOR.Configuration::get("path","thumbDirectory").
-                    \DIRECTORY_SEPARATOR.$media->getLogicalPath();
-
                 // create thumb if it doesn't exist
-                if (!\file_exists($thumbPath))
-                    imagejpeg($media->getThumb(), $thumbPath);
+                if (!$this->getThumbDirectoryPersistence()->isValidItem($media->getLogicalPath()))
+                    if (!$this->getThumbDirectoryPersistence()->makeJpegImageFile(
+                        $media->getLogicalPath(),$media->getThumb()
+                    ))
+                        throw new \Exception(
+                            "Não foi possível criar o arquivo ".$this->getLogicalPath()." com imagem JPEG!"
+                        );
             }
         }
     }
@@ -50,9 +39,9 @@ class DirectoryDao extends ItemDao
     public function getFiles() 
     {
         if (!$this->files) {
-            $absolutePath = $this->getAbsolutePath();
             $filesArray = 
-                $this->getFileSystemPersistence()->getFilesFromDirectory($absolutePath);
+                $this->getDataDirectoryPersistence()->
+                    getFilesFromDirectory($this->getLogicalPath());
             $this->files = array();
             foreach ($filesArray as $item)
                 if (\substr($item["name"],0,1) != ".") {
@@ -81,17 +70,9 @@ class DirectoryDao extends ItemDao
     
     public function getItems() 
     {
-        $itemsArray = 
-            $this->getFileSystemPersistence()
-                ->getItemsFromDirectory($this->getAbsolutePath());
-        foreach ($itemsArray as $item)
-            if (\substr($item["name"],0,1) != ".")
-                $items[] = $this->getItem(
-                    $this->getLogicalPath().
-                    ($this->getLogicalPath()? \DIRECTORY_SEPARATOR: "").
-                    $item["name"]
-                );
-        return $items;
+        if (!$this->items) 
+            $this->items = \array_merge($this->getSubDirectories(),$this->getFiles());
+        return $this->items;
     }
     
     public function getMedia($mediaIndex) 
@@ -140,8 +121,8 @@ class DirectoryDao extends ItemDao
     
     public static function getNewObject($logicalPath)
     {
-        $dao = self::getInstance($logicalPath);   
-    
+        $dao = self::getInstance($logicalPath);  
+        
         $itemArray = $dao->getItemDescription($logicalPath);
         
         if ($itemArray["type"] == "directory") {
@@ -157,8 +138,8 @@ class DirectoryDao extends ItemDao
     {
         if (!$this->subDirectories) {
             $subDirectoriesArray = 
-                $this->getFileSystemPersistence()
-                    ->getSubDirectoriesFromDirectory($this->getAbsolutePath());
+                $this->getDataDirectoryPersistence()
+                    ->getSubDirectoriesFromDirectory($this->getLogicalPath());
             $this->subDirectories = array();
             foreach ($subDirectoriesArray as $item)
                 if (\substr($item["name"],0,1) != ".")

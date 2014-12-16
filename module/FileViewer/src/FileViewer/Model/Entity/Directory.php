@@ -1,8 +1,6 @@
 <?php
 
-namespace FileViewer\Model;
-
-use FileViewer\Configuration\Configuration;
+namespace FileViewer\Model\Entity;
 
 class Directory extends Item 
 {
@@ -23,7 +21,7 @@ class Directory extends Item
     
     public function getItems() 
     {
-        return \array_merge($this->getSubDirectories(), $this->getFiles());
+        return $this->getDao()->getItems();
     }  
     
     public function getMedia($mediaIndex) 

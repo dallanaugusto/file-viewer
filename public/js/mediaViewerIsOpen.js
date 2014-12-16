@@ -1,19 +1,10 @@
-function leftArrowPressed() {
-    document.getElementById('previousMediaLink').click();
-}
-
-function rightArrowPressed() {
-    document.getElementById('nextMediaLink').click();
-}
-
-document.onkeydown = function(evt) {
-    evt = evt || window.event;
+$(document).keydown(function(evt) {
     switch (evt.keyCode) {
         case 37:
-            leftArrowPressed();
+            $('#previousMediaLink')[0].click();
             break;
         case 39:
-            rightArrowPressed();
+            $('#nextMediaLink')[0].click();
             break;
     }
-};
+});

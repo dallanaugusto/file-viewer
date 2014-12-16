@@ -1,8 +1,6 @@
 <?php
 
-namespace FileViewer\Model;
-
-use FileViewer\Configuration\Configuration;
+namespace FileViewer\Model\Entity;
 
 class File extends Item 
 {
