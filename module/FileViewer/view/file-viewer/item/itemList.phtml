@@ -1,0 +1,86 @@
+<?php
+
+// mediaViewerIsOpen é usada quando o controller Media é chamado
+$mediaViewerIsOpen = $this->media != null;
+if ($mediaViewerIsOpen) {
+    $numItems = sizeof($this->allItems);
+}
+
+// formação dos links para os pais do diretório
+$itemPath = "";
+foreach ($this->allLogicalPaths as $path => $name)
+    $itemPath .= "/<a href=\"".$this->url("home").$path."\">".$name."</a>";
+
+// terá menu se o diretório tem pai ou se tem mídias
+$hasNav = $this->directory->getParent() || $this->directory->hasMedia();
+if ($hasNav) {
+    $directoryLink = $directory? 
+        $this->url("home").$this->directory->getUrl(): ".";
+    $parentLink = $this->directory->getParent() && $this->directory->getParent()->getLogicalPath()?
+        $this->url("home").$this->directory->getParent()->getUrl(): ".";
+    $firstMediaLink = $this->directory->hasMedia()? 
+        $this->url("home").$this->directory->getFirstMedia()->getUrl(): null;
+}
+if ($hasNav) {
+?>
+                <nav>
+                    <ul>
+<?php
+    if ($this->directory->getParent()) {
+?>                     
+                        <li class="goback"><a href="<?php echo $parentLink; ?>">Voltar n&iacute;vel</a></li>
+<?php
+    }
+    if ($mediaViewerIsOpen) {
+?>                    
+                        <li class="closeMediaViewer"><a href="<?php echo $directoryLink; ?>">Fechar visualizador</a></li>
+<?php
+    }
+    if ($this->directory->hasMedia() && !$mediaViewerIsOpen) {
+?>                    
+                        <li class="openMediaViewer"><a href="<?php echo $firstMediaLink; ?>">Abrir visualizador</a></li>
+<?php
+    }
+?>                      
+                    </ul>
+                </nav>
+<?php
+}
+?>
+                <h4 class="itemPath"><?php echo $itemPath; ?></h4>
+<?php
+if ($this->items) {
+?>
+                <ul class="items">
+<?php
+    foreach ($this->items as $item) {
+        $itemLink = $this->url("home").$item->getUrl();        
+        if ($mediaViewerIsOpen && $item->getType() == "image") {
+            $thumbLink = $this->url("home").$item->getThumbUrl();
+            $isCurrentItem = $this->media && $item->getLogicalPath() == $this->media->getLogicalPath();
+?>
+                    <li class="<?php echo $item->getType(); ?>File thumb<?php if ($isCurrentItem) echo " current"; ?>">
+                        <figure>
+                            <a href="<?php echo $itemLink; ?>"><img src="<?php echo $thumbLink; ?>" alt="Mídia <?php echo $item->getName(); ?>"></a>
+                            <figcaption><a href="<?php echo $itemLink; ?>"><?php echo $item->getName(); ?></a></figcaption>
+                        </figure>
+                    </li>
+<?php                  
+        }
+        else {
+?>
+                    <li class="<?php echo $item->getType(); ?>File notThumb">
+                        <a href="<?php echo $itemLink; ?>"><?php echo $item->getShortLabel(); ?></a>
+                    </li>
+<?php         
+        }
+    }
+?>
+                </ul><!-- ul.items -->
+<?php
+}
+else {
+?>
+                <p class="message error">Não há items neste diretório</p>
+<?php
+}

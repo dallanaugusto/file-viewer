@@ -4,6 +4,7 @@ namespace FileViewer\Persistence;
 
 class FileSystemPersistence {
     
+    // set the root directory to make the absolute paths
     private $rootPath;
     
     public function __construct($rootPath = null)
@@ -43,7 +44,8 @@ class FileSystemPersistence {
     }
     
     public function getFilesFromDirectory($relativePath) 
-    {    
+    {  
+        // get all the items and filter them to choose only the files
         $items = $this->getItemsFromDirectory($relativePath);
         $files = array();
         foreach ($items as $item)
@@ -82,6 +84,7 @@ class FileSystemPersistence {
     
     public function getItemsFromDirectory($relativePath) 
     {
+        // get all the items
         $absolutePath = $this->makeAbsolutePath($relativePath);
         $itemNames = \scandir($absolutePath, 0);
         $directories = array();
@@ -89,6 +92,7 @@ class FileSystemPersistence {
         foreach ($itemNames as $itemName) {
             if ($itemName != "." && $itemName != "..") {
                 $relativeItemName = $relativePath."/".$itemName;
+                // put the directories before the files
                 if (\is_dir($absolutePath))
                     $directories[] = $this->getItemByRelativePath($relativeItemName);
                 else
@@ -105,6 +109,7 @@ class FileSystemPersistence {
     
     public function getSubDirectoriesFromDirectory($relativePath) 
     {
+        // get all the items and filter them to choose only the subdirectories
         $items = $this->getItemsFromDirectory($relativePath);
         $subDirectories = array();
         foreach ($items as $item)

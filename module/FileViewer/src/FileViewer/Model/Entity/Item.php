@@ -5,7 +5,8 @@ namespace FileViewer\Model\Entity;
 abstract class Item extends AbstractEntity
 {
     
-    public function getAbsolutePath() {
+    public function getAbsolutePath() 
+    {
         return $this->getDao()->getAbsolutePath();
     }
     
@@ -14,37 +15,45 @@ abstract class Item extends AbstractEntity
         return $this->getDao()->getAllLogicalPaths();
     } 
     
-    public function getLogicalPath() {
+    public function getLogicalPath() 
+    {
         return $this->getDao()->getLogicalPath();
     }
     
-    public function getName() {
+    public function getName() 
+    {
         return $this->getDao()->getName();
     }
     
-    public function getParent() {
+    public function getParent() 
+    {
         return $this->getDao()->getParent();
     }
     
-    public function getPermissions() {
+    public function getPermissions() 
+    {
         return $this->getDao()->getPermissions();
     }
     
-    public function getDataPath() {
+    public function getDataPath() 
+    {
         return $this->getDao()->getDataPath();
     }
     
-    public function getShortLabel() {
+    public function getShortLabel() 
+    {
         return $this->getDao()->getShortLabel();
     }
     
-    public function getSize() {
+    public function getSize() 
+    {
         return $this->getDao()->getSize();
     }
 
     abstract public function getType();
     
-    public function getUrl() {
+    public function getUrl() 
+    {
         return $this->getDao()->getUrl();
     }
     

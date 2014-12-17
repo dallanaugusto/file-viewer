@@ -1,0 +1,73 @@
+<?php
+
+// mediaViewerIsOpen é usada quando o controller Media é chamado
+$mediaViewerIsOpen = $this->media != null;
+if ($mediaViewerIsOpen) {
+    $mediaLink = $this->url("home").$this->media->getDataPath();
+    $previousMediaLink = $this->url("home").$this->previousMedia->getUrl();
+    $nextMediaLink = $this->url("home").$this->nextMedia->getUrl();
+    $numItems = sizeof($this->allItems);
+}
+?>
+<?php
+if ($mediaViewerIsOpen) {
+?>
+                <div class="media">
+<?php
+    if ($this->media->isImage()) {
+?>
+                    <figure>
+                        <img id="mediaElement" src="<?php echo $mediaLink; ?>" alt="Mídia <?php echo $this->media->getName(); ?>">
+                        <figcaption><?php echo "Mídia ".$this->currentMediaIndex." de ".$numItems; ?></figcaption>
+                    </figure>
+<?php
+    }
+    else if ($this->media->isHtml5Video()) {
+?>
+                    <video id="mediaElement" src="<?php echo $mediaLink; ?>" controls autoplay>
+                        Seu navegador não suporta o elemento <code>video</code>.
+                    </video>
+<?php
+    }
+    else if ($this->media->isHtml5Audio()) {
+?>
+                    <audio id="mediaElement" src="<?php echo $mediaLink; ?>" controls autoplay>
+                        Seu navegador não suporta o elemento <code>video</code>.
+                    </audio>
+<?php
+    }
+?>
+                    <nav>
+                        <ul class="mediaNav">
+                            <li class="previous">
+                                <a href="<?php echo $previousMediaLink; ?>" id="previousMediaLink">Anterior</a>
+                            </li>
+                            <li class="next">
+                                <a href="<?php echo $nextMediaLink; ?>" id="nextMediaLink">Posterior</a>
+                            </li>
+                        </ul>
+<?php
+        if ($numItems > $pageSize) {
+?>
+                        <ul class="pageNav">
+<?php
+            for ($i = 0; $i < $numItems; $i++) {
+                if ($i%$this->pageSize == 0) {
+                    $isCurrentPage = 
+                        $i <= $this->currentMediaIndex &&
+                        $this->currentMediaIndex < $i + $this->pageSize;
+                    $pageLink = $this->url("home")."media/?id=".\urlencode($this->allItems[$i]->getLogicalPath());
+?>                     
+                            <li<?php if ($isCurrentPage) { ?> class="current"<?php } ?>><a href="<?php echo $pageLink; ?>"><?php echo $i/$this->pageSize; ?></a></li>
+<?php
+                }
+            }
+?>                      
+                        </ul><!-- ul.pageNav -->
+<?php
+        }
+?>                        
+                    </nav>
+                </div><!-- div.media -->
+<?php
+}

@@ -55,6 +55,43 @@ class MediaController extends AbstractActionController
             "previousMedia" => $previousMedia, "nextMedia" => $nextMedia,
         );
     }
+    
+    public function getPreviousMediaAction()
+    {
+        // obtendo caminho da mídia e calculando a anterior
+        /*$mediaPath = \filter_input(\INPUT_GET,"id");
+        $pageSize = Configuration::get("custom", "pageSize");*/
+        
+        // obtendo mídia
+        /*$media = FileDao::getNewObject($mediaPath);
+        $mediaIndex = $media->getMediaIndex($media);
+        
+        // obter caminho da media*/
+        
+        // update post
+        $request = $this->getRequest();
+        $response = $this->getResponse();
+        if ($request->isPost()) {
+            // obter dados
+            $post_data = $request->getPost();
+            $mediaPath = $post_data['id'];
+            // obtendo mídia e diretório
+            $media = FileDao::getNewObject($mediaPath);
+            $directory = $media->getParent();
+            // obtendo mídia anterior
+            $mediaIndex = $directory->getMediaIndex($media);
+            $previousMedia = $directory->getMedia($mediaIndex-1);
+            // retornando informação
+            if (!$previousMedia)
+                $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
+            else {
+                $response->setContent(\Zend\Json\Json::encode(
+                    array('response' => true, 'previousMedia' => $media->getLogicalPath())
+                ));
+            }
+        }
+        return array('response' => false);
+    }
 
 
 }

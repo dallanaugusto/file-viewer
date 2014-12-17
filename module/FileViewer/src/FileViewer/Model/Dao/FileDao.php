@@ -4,6 +4,7 @@ namespace FileViewer\Model\Dao;
 
 use FileViewer\Configuration\Configuration;
 use FileViewer\Model\Entity\File;
+use FileViewer\Model\Exception\ItIsNotFileException;
 
 class FileDao extends ItemDao
 {
@@ -13,6 +14,9 @@ class FileDao extends ItemDao
         return new FileDao($logicalPath);
     }
     
+    // we can't instante a fileDao directly. This is not possible because 
+    // creating a file DAO involves also creating the associated object 
+    // (entity).
     public static function getNewObject($logicalPath)
     {
         $dao = self::getInstance($logicalPath);      
@@ -26,12 +30,13 @@ class FileDao extends ItemDao
             return $file;
         }
         else
-            throw new \Exception("O item $logicalPath não é um arquivo");
+            throw new ItIsNotFileException($logicalPath);
     } 
     
+    // make a thumbnail from file if it's a image
     public function getThumb()
     {
-        if ($this->getType() == "image") {
+        if ($this->isImage()) {
             // definitions
             $maxThumbSize = Configuration::get("custom","thumbSize");
 
@@ -45,9 +50,8 @@ class FileDao extends ItemDao
     
     public function getType() 
     {
-        $pathInfo = \pathinfo($this->getAbsolutePath());
-        $extension = isset($pathInfo["extension"])?
-            \strtolower($pathInfo["extension"]): "";
+        // get the extension and choose type by it.
+        $extension = $this->getExtension();
         $type = Configuration::get("file-type",$extension);
         return $type? $type: "unknown";
     }
@@ -55,20 +59,36 @@ class FileDao extends ItemDao
     public function getUrl() 
     {
         return !$this->isMedia()? 
-            parent::getUrl(): "media/?id=".str_replace(' ','%20',\urlencode($this->getLogicalPath()));
+            parent::getUrl(): "media/?id=".\str_replace(' ','%20',\urlencode($this->getLogicalPath()));
     }
     
     public function getThumbUrl() {
-        return str_replace(
+        return \str_replace(
             ' ','%20',Configuration::get("path","thumbDirectory").
             \DIRECTORY_SEPARATOR.$this->getLogicalPath()
         );
     }
     
+    public function isBlocked() {
+        // return if the file is blocked to show
+        return $this->getType() == "blocked";
+    }  
+    
+    public function isHtml5Audio() {
+        return $this->getType() == "html5Audio";
+    }  
+    
+    public function isHtml5Video() {
+        return $this->getType() == "html5Video";
+    }  
+    
+    public function isImage() {
+        return $this->getType() == "image";
+    }    
+    
     public function isMedia() {
-        return 
-            $this->getType() == "image" || $this->getType() == "html5Video" ||
-            $this->getType() == "html5Audio";
+        // return the HTML5 executable medias only
+        return $this->isImage() || $this->isHtml5Audio() || $this->isHtml5Video();
     }    
     
     

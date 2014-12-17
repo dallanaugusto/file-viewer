@@ -20,13 +20,36 @@ class File extends Item
         return $this->getDao()->getUrl();
     }
     
-    public function getThumbUrl() {
+    public function getThumbUrl() 
+    {
         return $this->getDao()->getThumbUrl();
     }
     
-    public function isMedia() {
+    public function isBlocked() 
+    {
+        // return if the file is blocked to show
+        return $this->getDao()->isBlocked();
+    }  
+    
+    public function isHtml5Audio() 
+    {
+        return $this->getDao()->isHtml5Audio();
+    }  
+    
+    public function isHtml5Video() 
+    {
+        return $this->getDao()->isHtml5Video();
+    }  
+    
+    public function isImage() 
+    {
+        return $this->getDao()->isImage();
+    }
+    
+    public function isMedia() 
+    {
         return $this->getDao()->isMedia();
-    }    
+    }
     
 
 }

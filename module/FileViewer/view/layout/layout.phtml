@@ -15,14 +15,12 @@ $developerLabel = Configuration::get("organization","developerLabel");
         <link rel="shortcut icon" href="<?php echo $this->basePath(); ?>/css/img/favicon.ico" type="image/x-icon">
         <link href="<?php echo $this->basePath(); ?>/css/main.php" rel="stylesheet" type="text/css">
         <link href="<?php echo $this->basePath(); ?>/css/high.php" rel="stylesheet" type="text/css" media="screen">
-        <link 
-            href="<?php echo $this->basePath(); ?>/css/low.php" rel="stylesheet" type="text/css" 
-            media="screen and (max-width: 800px)"
-        >
+        <link href="<?php echo $this->basePath(); ?>/css/low.php" rel="stylesheet" type="text/css" media="screen and (max-width: 800px)">
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid%20Sans">
 <?php 
 if (isset($mediaViewerIsOpen) && $mediaViewerIsOpen) { 
 ?>
+        <script src="<?php echo $this->basePath(); ?>/js/bootstrap.min.js"></script>
         <script src="<?php echo $this->basePath(); ?>/js/jquery.min.js"></script>
         <script src="<?php echo $this->basePath(); ?>/js/mediaViewerIsOpen.js"></script>
 <?php 
