@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+/*$( document ).ready(function() {
     $(document).keydown(function(evt) {
         switch (evt.keyCode) {
             case 37:
@@ -9,13 +9,52 @@ $( document ).ready(function() {
                 break;
         }
     });    
+});
+
+jQuery(function($) {
     
+    $("#previousMediaLink").on('click', function(event){
+        event.preventDefault();
+        $.post("add", {id: $('#mediaElement').attr("alt")},
+            function(data){
+                if(data.response == true){
+                    alert(window.location.href);
+                    //$('#mediaElement').attr("src","/" + data.dataPath);
+                // print success message
+                } else {
+                    // print error message
+                    console.log('could not add');
+                }
+            }, 'json');
+    });
+    
+    $('#previousMediaLink').on('click', function(event){
+        var id = $('#mediaElement').attr("src");
+        event.preventDefault();
+        $.post("getPreviousMedia", {
+            id: id
+        },function(data){
+            if (data.response == true){
+                alert("ok");
+            // print success message
+            } else {
+                // print error message
+                console.log('could not add');
+            }
+        }, 'json');
+
+    });
+    
+});*/
+
+    /*
     $('#previousMediaLink').on('click', function(event){
         event.preventDefault();
         $.post(
             "media/getPreviousMedia", 
             {id: $('#mediaElement').attr("src")},
             function(data){
+                alert(data.previousMedia);
                 if(data.response == true){
                     alert(data.previousMedia);
                     //$('#mediaElement').attr("src", data.nextImage);
@@ -27,8 +66,25 @@ $( document ).ready(function() {
             }, 
             'json'
         );
-    });
+    });*/
+    /*        
+    $('#previousMediaLink').on('click', function(event){
+        var myData = "name=William Adama&alias=Husker&job=Commander of the Colonial Fleet";
+        $.ajax({
+            type: "POST",
+            url: "progress",
+            data: myData,
+            success: function() {
+                alert("AJAX call a success!");
+            },
+            error: function() {
+                  alert("AJAX call an epic failure");
+            }
+        });
+        return false;
 
+    });
+    */
     /*    
         $("#create").on('click', function(event){
             event.preventDefault();
@@ -83,4 +139,3 @@ $( document ).ready(function() {
         });
 
     */    
-});

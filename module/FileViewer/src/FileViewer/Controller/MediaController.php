@@ -5,7 +5,9 @@ namespace FileViewer\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 
 use FileViewer\Configuration\Configuration;
+use FileViewer\Model\Dao\DirectoryDao;
 use FileViewer\Model\Dao\FileDao;
+use FileViewer\Model\Exception\ItIsNotItemException;
 
 class MediaController extends AbstractActionController
 {
@@ -14,13 +16,23 @@ class MediaController extends AbstractActionController
     {
         // obtendo caminho da mídia e tamanho da paginação
         $mediaPath = \filter_input(\INPUT_GET,"id");
+        $directoryPath = \filter_input(\INPUT_GET,"directory");
         $pageSize = Configuration::get("custom", "pageSize");
         
-        // obtendo mídia
-        $media = FileDao::getNewObject($mediaPath);
-        
-        // obtendo diretório
-        $directory = $media->getParent();
+        if ($mediaPath) {
+            // obtendo mídia        
+            $media = FileDao::getNewObject($mediaPath);        
+            // obtendo diretório
+            $directory = $media->getParent();
+        }
+        else if ($directoryPath) {        
+            // obtendo diretório
+            $directory = DirectoryDao::getNewObject($directoryPath);
+            // obtendo mídia        
+            $media = $directory->getFirstMedia();
+        }
+        else
+            throw new ItIsNotItemException("");
         
         // formando caminho de links do diretório
         $allLogicalPaths = $directory->getAllLogicalPaths();
@@ -56,25 +68,14 @@ class MediaController extends AbstractActionController
         );
     }
     
-    public function getPreviousMediaAction()
+    public function addAction() 
     {
-        // obtendo caminho da mídia e calculando a anterior
-        /*$mediaPath = \filter_input(\INPUT_GET,"id");
-        $pageSize = Configuration::get("custom", "pageSize");*/
-        
-        // obtendo mídia
-        /*$media = FileDao::getNewObject($mediaPath);
-        $mediaIndex = $media->getMediaIndex($media);
-        
-        // obter caminho da media*/
-        
-        // update post
         $request = $this->getRequest();
         $response = $this->getResponse();
         if ($request->isPost()) {
             // obter dados
-            $post_data = $request->getPost();
-            $mediaPath = $post_data['id'];
+            $postData = $request->getPost();
+            $mediaPath = $postData['id'];
             // obtendo mídia e diretório
             $media = FileDao::getNewObject($mediaPath);
             $directory = $media->getParent();
@@ -84,14 +85,41 @@ class MediaController extends AbstractActionController
             // retornando informação
             if (!$previousMedia)
                 $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
-            else {
-                $response->setContent(\Zend\Json\Json::encode(
-                    array('response' => true, 'previousMedia' => $media->getLogicalPath())
-                ));
-            }
+            else
+                $response->setContent(\Zend\Json\Json::encode(array(
+                    'response' => true, 'dataPath' => $previousMedia->getDataPath(),
+                    'logicalPath' => $previousMedia->getLogicalPath(),
+                )));
         }
-        return array('response' => false);
+        return $response;
     }
+    
+    public function getPreviousMediaAction() 
+    {
+        $request = $this->getRequest();
+        $response = $this->getResponse();
+        if ($request->isPost()) {
+            // obter dados
+            $postData = $request->getPost();
+            $mediaPath = $postData['id'];
+            // obtendo mídia e diretório
+            $media = FileDao::getNewObject($mediaPath);
+            $directory = $media->getParent();
+            // obtendo mídia anterior
+            $mediaIndex = $directory->getMediaIndex($media);
+            $previousMedia = $directory->getMedia($mediaIndex-1);
+            // retornando informação
+            if (!$previousMedia)
+                $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
+            else
+                $response->setContent(\Zend\Json\Json::encode(array(
+                    'response' => true, 'dataPath' => $previousMedia->getDataPath(),
+                    'logicalPath' => $previousMedia->getLogicalPath(),
+                )));
+        }
+        return $response;
+    }
+
 
 
 }

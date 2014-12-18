@@ -12,12 +12,32 @@ if ($mediaViewerIsOpen) {
 <?php
 if ($mediaViewerIsOpen) {
 ?>
+                <script>      
+jQuery(function($) {
+    
+    $("#previousMediaLink").on('click', function(event){
+        event.preventDefault();
+        var $stickynote = $(this);
+        $.post("getPreviousMedia", {id: $("#mediaElement").attr("alt")},
+            function(data){
+                if(data.response == true){
+                    $("#mediaElement").attr("src","<?php echo $this->url("home") ?>" + data.dataPath);
+                // print success message
+                } else {
+                    // print error message
+                    console.log('could not add');
+                }
+            }, 'json');
+    });
+    
+});
+                </script>
                 <div class="media">
 <?php
     if ($this->media->isImage()) {
 ?>
                     <figure>
-                        <img id="mediaElement" src="<?php echo $mediaLink; ?>" alt="Mídia <?php echo $this->media->getName(); ?>">
+                        <img id="mediaElement" src="<?php echo $mediaLink; ?>" alt="<?php echo $this->media->getDataPath(); ?>">
                         <figcaption><?php echo "Mídia ".$this->currentMediaIndex." de ".$numItems; ?></figcaption>
                     </figure>
 <?php

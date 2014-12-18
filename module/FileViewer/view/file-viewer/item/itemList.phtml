@@ -18,8 +18,8 @@ if ($hasNav) {
         $this->url("home").$this->directory->getUrl(): ".";
     $parentLink = $this->directory->getParent() && $this->directory->getParent()->getLogicalPath()?
         $this->url("home").$this->directory->getParent()->getUrl(): ".";
-    $firstMediaLink = $this->directory->hasMedia()? 
-        $this->url("home").$this->directory->getFirstMedia()->getUrl(): null;
+    $mediaViewerLink = $this->directory->hasMedia()? 
+        $this->url("home")."media/?directory=".$this->directory->getLogicalPath(): ".";
 }
 if ($hasNav) {
 ?>
@@ -38,7 +38,7 @@ if ($hasNav) {
     }
     if ($this->directory->hasMedia() && !$mediaViewerIsOpen) {
 ?>                    
-                        <li class="openMediaViewer"><a href="<?php echo $firstMediaLink; ?>">Abrir visualizador</a></li>
+                        <li class="openMediaViewer"><a href="<?php echo $mediaViewerLink; ?>">Abrir visualizador</a></li>
 <?php
     }
 ?>                      
