@@ -53,9 +53,10 @@ if ($this->items) {
 ?>
                 <ul class="items">
 <?php
-    foreach ($this->items as $item) {
-        $itemLink = $this->url("home").$item->getUrl();        
-        if ($mediaViewerIsOpen && $item->getType() == "image") {
+    foreach ($this->items as $i => $item) {
+        $itemLink = $this->url("home").$item->getUrl();  
+        if ($mediaViewerIsOpen && $item->isImage()) {
+            $itemLink = $this->url("home")."media/?directory=".$this->directory->getLogicalPath()."&amp;id=$i";
             $thumbLink = $this->url("home").$item->getThumbUrl();
             $isCurrentItem = $this->media && $item->getLogicalPath() == $this->media->getLogicalPath();
 ?>

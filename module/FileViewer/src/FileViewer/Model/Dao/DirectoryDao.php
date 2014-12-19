@@ -133,10 +133,10 @@ class DirectoryDao extends ItemDao
         $numMedias = \sizeof($allMedias);
         
         // take the necessary medias only
-        for ($i = 0; $i < $pageSize; $i++) {
-            if ($i+$firstThumb >= $numMedias)
+        for ($i = $firstThumb; $i < $firstThumb + $pageSize; $i++) {
+            if ($i >= $numMedias)
                 break;
-            $medias[] = $allMedias[$i+$firstThumb];
+            $medias[$i] = $allMedias[$i];
         }
         return $medias;
     }
@@ -188,7 +188,7 @@ class DirectoryDao extends ItemDao
     
     public function getUrl() 
     {
-        return "directory/?id=".str_replace(' ','%20',\urlencode($this->getLogicalPath()));
+        return "directory/?path=".str_replace(' ','%20',\urlencode($this->getLogicalPath()));
     }
 
     public function hasMedia() 

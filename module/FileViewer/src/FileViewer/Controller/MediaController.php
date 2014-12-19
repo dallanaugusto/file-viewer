@@ -15,8 +15,9 @@ class MediaController extends AbstractActionController
     public function indexAction()
     {
         // obtendo caminho da mídia e tamanho da paginação
-        $mediaPath = \filter_input(\INPUT_GET,"id");
+        $mediaPath = \filter_input(\INPUT_GET,"path");
         $directoryPath = \filter_input(\INPUT_GET,"directory");
+        $mediaId = \filter_input(\INPUT_GET,"id");
         $pageSize = Configuration::get("custom", "pageSize");
         
         if ($mediaPath) {
@@ -24,21 +25,29 @@ class MediaController extends AbstractActionController
             $media = FileDao::getNewObject($mediaPath);        
             // obtendo diretório
             $directory = $media->getParent();
+            // índice da mídia atual no diretório
+            $currentMediaIndex = $directory->getMediaIndex($media);
         }
-        else if ($directoryPath) {        
+        else if ($directoryPath) { 
             // obtendo diretório
             $directory = DirectoryDao::getNewObject($directoryPath);
-            // obtendo mídia        
-            $media = $directory->getFirstMedia();
+            // obtendo mídia   
+            if ($mediaId) {
+                $media = $directory->getMedia($mediaId);
+                // índice da mídia atual no diretório
+                $currentMediaIndex = $mediaId;
+            }
+            else {                
+                $media = $directory->getFirstMedia();
+                // índice da mídia atual no diretório
+                $currentMediaIndex = 0;
+            }
         }
         else
             throw new ItIsNotItemException("");
         
         // formando caminho de links do diretório
         $allLogicalPaths = $directory->getAllLogicalPaths();
-        
-        // índice da mídia atual no diretório
-        $currentMediaIndex = $directory->getMediaIndex($media);
         
         // obtendo items filhos do diretório
         $items = $directory->getMediasByMediaIndex($currentMediaIndex);
@@ -75,13 +84,17 @@ class MediaController extends AbstractActionController
         if ($request->isPost()) {
             // obter dados
             $postData = $request->getPost();
-            $mediaPath = $postData['id'];
+            $mediaPath = $postData['path'];
             // obtendo mídia e diretório
             $media = FileDao::getNewObject($mediaPath);
             $directory = $media->getParent();
+            $numItems = sizeof($directory->getMedias());
             // obtendo mídia anterior
             $mediaIndex = $directory->getMediaIndex($media);
-            $previousMedia = $directory->getMedia($mediaIndex-1);
+            $previousMediaIndex = $mediaIndex > 0?
+                $mediaIndex - 1: $numItems - 1;
+            $previousMedia = $directory->getMedia($previousMediaIndex);
+            $previousMediaName = $previousMedia->getName();
             // retornando informação
             if (!$previousMedia)
                 $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
@@ -89,6 +102,8 @@ class MediaController extends AbstractActionController
                 $response->setContent(\Zend\Json\Json::encode(array(
                     'response' => true, 'dataPath' => $previousMedia->getDataPath(),
                     'logicalPath' => $previousMedia->getLogicalPath(),
+                    'id' => $previousMediaIndex, 'name' => $previousMediaName,
+                    'numItems' => $numItems,
                 )));
         }
         return $response;
@@ -101,13 +116,17 @@ class MediaController extends AbstractActionController
         if ($request->isPost()) {
             // obter dados
             $postData = $request->getPost();
-            $mediaPath = $postData['id'];
+            $mediaPath = $postData['path'];
             // obtendo mídia e diretório
             $media = FileDao::getNewObject($mediaPath);
             $directory = $media->getParent();
+            $numItems = sizeof($directory->getMedias());
             // obtendo mídia anterior
             $mediaIndex = $directory->getMediaIndex($media);
-            $nextMedia = $directory->getMedia($mediaIndex+1);
+            $nextMediaIndex = $mediaIndex < $numItems - 1?
+                $mediaIndex + 1: 0;
+            $nextMedia = $directory->getMedia($nextMediaIndex);
+            $nextMediaName = $nextMedia->getName();
             // retornando informação
             if (!$nextMedia)
                 $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
@@ -115,6 +134,8 @@ class MediaController extends AbstractActionController
                 $response->setContent(\Zend\Json\Json::encode(array(
                     'response' => true, 'dataPath' => $nextMedia->getDataPath(),
                     'logicalPath' => $nextMedia->getLogicalPath(),
+                    'id' => $nextMediaIndex, 'name' => $nextMediaName,
+                    'numItems' => $numItems,
                 )));
         }
         return $response;

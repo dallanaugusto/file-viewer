@@ -12,7 +12,7 @@ class DirectoryController extends AbstractActionController
     public function indexAction()
     {
         // obtendo caminho do diretório
-        $directoryPath = \filter_input(\INPUT_GET,"id");
+        $directoryPath = \filter_input(\INPUT_GET,"path");
         
         // obtendo diretório
         $directory = DirectoryDao::getNewObject($directoryPath);

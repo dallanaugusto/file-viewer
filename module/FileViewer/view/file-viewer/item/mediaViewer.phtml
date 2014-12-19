@@ -16,35 +16,34 @@ if ($mediaViewerIsOpen) {
                
 jQuery(function($) {
     
-    $("#previousMediaLink").on('click', function(event){
-        event.preventDefault();
-        $.post("getPreviousMedia", {id: $("#mediaElement").attr("alt")},
-            function(data){
-                if(data.response == true) {
-                    $("#mediaElement").attr("src","<?php echo $this->url("home") ?>" + data.dataPath);
-                    $("#mediaElement").attr("alt",data.logicalPath);
-                // print success message
-                } else {
-                    // print error message
-                    console.log('could not add');
-                }
-            }, 'json');
-    });
+    function ucfirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
     
-    $("#nextMediaLink").on('click', function(event){
+    function mediaViewer(src, alt, name, id, total) {
+        $(".pageHeadings h4").first().text(name);
+        $("#mediaElement").attr("src","<?php echo $this->url("home") ?>" + src);
+        $("#mediaElement").attr("alt",alt);
+        if ($("#mediaLabel").length)
+            $("#mediaLabel").text("Mídia " + id + " de " + total);
+    }
+    
+    function mediaLink(event, orientation) {
         event.preventDefault();
-        $.post("getNextMedia", {id: $("#mediaElement").attr("alt")},
+        var action = "get" + ucfirst(orientation) + "Media";
+        $.post(action, {path: $("#mediaElement").attr("alt")},
             function(data){
-                if(data.response == true) {
-                    $("#mediaElement").attr("src","<?php echo $this->url("home") ?>" + data.dataPath);
-                    $("#mediaElement").attr("alt",data.logicalPath);
-                // print success message
-                } else {
-                    // print error message
+                if(data.response == true)
+                    mediaViewer(
+                        data.dataPath, data.logicalPath, data.name, data.id, data.numItems
+                    );
+                else
                     console.log('could not add');
-                }
             }, 'json');
-    });
+    }
+    
+    $("#previousMediaLink").on('click', function(event){mediaLink(event,"previous")});
+    $("#nextMediaLink").on('click', function(event){mediaLink(event,"next")});
     
 });
 
@@ -58,6 +57,7 @@ $(document).keydown(function(evt) {
             break;
     }
 });
+
                 </script>
                 <div class="media">
 <?php
@@ -65,20 +65,20 @@ $(document).keydown(function(evt) {
 ?>
                     <figure>
                         <img id="mediaElement" src="<?php echo $mediaLink; ?>" alt="<?php echo $this->media->getLogicalPath(); ?>">
-                        <figcaption><?php echo "Mídia ".$this->currentMediaIndex." de ".$numItems; ?></figcaption>
+                        <figcaption id="mediaLabel"><?php echo "Mídia ".$this->currentMediaIndex." de ".$numItems; ?></figcaption>
                     </figure>
 <?php
     }
     else if ($this->media->isHtml5Video()) {
 ?>
-                    <video id="mediaElement" src="<?php echo $mediaLink; ?>" controls autoplay>
+                    <video id="mediaElement" src="<?php echo $mediaLink; ?>" alt="<?php echo $this->media->getLogicalPath(); ?>" controls autoplay>
                         Seu navegador não suporta o elemento <code>video</code>.
                     </video>
 <?php
     }
     else if ($this->media->isHtml5Audio()) {
 ?>
-                    <audio id="mediaElement" src="<?php echo $mediaLink; ?>" controls autoplay>
+                    <audio id="mediaElement" src="<?php echo $mediaLink; ?>" alt="<?php echo $this->media->getLogicalPath(); ?>" controls autoplay>
                         Seu navegador não suporta o elemento <code>video</code>.
                     </audio>
 <?php
@@ -103,7 +103,7 @@ $(document).keydown(function(evt) {
                     $isCurrentPage = 
                         $i <= $this->currentMediaIndex &&
                         $this->currentMediaIndex < $i + $this->pageSize;
-                    $pageLink = $this->url("home")."media/?id=".\urlencode($this->allItems[$i]->getLogicalPath());
+                    $pageLink = $this->url("home")."media/?path=".\urlencode($this->allItems[$i]->getLogicalPath());
 ?>                     
                             <li<?php if ($isCurrentPage) { ?> class="current"<?php } ?>><a href="<?php echo $pageLink; ?>"><?php echo $i/$this->pageSize; ?></a></li>
 <?php

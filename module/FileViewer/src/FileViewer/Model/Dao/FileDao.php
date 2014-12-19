@@ -59,7 +59,7 @@ class FileDao extends ItemDao
     public function getUrl() 
     {
         return !$this->isMedia()? 
-            parent::getUrl(): "media/?id=".\str_replace(' ','%20',\urlencode($this->getLogicalPath()));
+            parent::getUrl(): "media/?path=".\str_replace(' ','%20',\urlencode($this->getLogicalPath()));
     }
     
     public function getThumbUrl() {
