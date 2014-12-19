@@ -12,16 +12,32 @@ if ($mediaViewerIsOpen) {
 <?php
 if ($mediaViewerIsOpen) {
 ?>
-                <script>      
+                <script> 
+               
 jQuery(function($) {
     
     $("#previousMediaLink").on('click', function(event){
         event.preventDefault();
-        var $stickynote = $(this);
         $.post("getPreviousMedia", {id: $("#mediaElement").attr("alt")},
             function(data){
-                if(data.response == true){
+                if(data.response == true) {
                     $("#mediaElement").attr("src","<?php echo $this->url("home") ?>" + data.dataPath);
+                    $("#mediaElement").attr("alt",data.logicalPath);
+                // print success message
+                } else {
+                    // print error message
+                    console.log('could not add');
+                }
+            }, 'json');
+    });
+    
+    $("#nextMediaLink").on('click', function(event){
+        event.preventDefault();
+        $.post("getNextMedia", {id: $("#mediaElement").attr("alt")},
+            function(data){
+                if(data.response == true) {
+                    $("#mediaElement").attr("src","<?php echo $this->url("home") ?>" + data.dataPath);
+                    $("#mediaElement").attr("alt",data.logicalPath);
                 // print success message
                 } else {
                     // print error message
@@ -31,13 +47,24 @@ jQuery(function($) {
     });
     
 });
+
+$(document).keydown(function(evt) {
+    switch (evt.keyCode) {
+        case 37:
+            $('#previousMediaLink')[0].click();
+            break;
+        case 39:
+            $('#nextMediaLink')[0].click();
+            break;
+    }
+});
                 </script>
                 <div class="media">
 <?php
     if ($this->media->isImage()) {
 ?>
                     <figure>
-                        <img id="mediaElement" src="<?php echo $mediaLink; ?>" alt="<?php echo $this->media->getDataPath(); ?>">
+                        <img id="mediaElement" src="<?php echo $mediaLink; ?>" alt="<?php echo $this->media->getLogicalPath(); ?>">
                         <figcaption><?php echo "Mídia ".$this->currentMediaIndex." de ".$numItems; ?></figcaption>
                     </figure>
 <?php

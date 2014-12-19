@@ -68,7 +68,7 @@ class MediaController extends AbstractActionController
         );
     }
     
-    public function addAction() 
+    public function getPreviousMediaAction() 
     {
         $request = $this->getRequest();
         $response = $this->getResponse();
@@ -94,7 +94,7 @@ class MediaController extends AbstractActionController
         return $response;
     }
     
-    public function getPreviousMediaAction() 
+    public function getNextMediaAction() 
     {
         $request = $this->getRequest();
         $response = $this->getResponse();
@@ -107,14 +107,14 @@ class MediaController extends AbstractActionController
             $directory = $media->getParent();
             // obtendo mídia anterior
             $mediaIndex = $directory->getMediaIndex($media);
-            $previousMedia = $directory->getMedia($mediaIndex-1);
+            $nextMedia = $directory->getMedia($mediaIndex+1);
             // retornando informação
-            if (!$previousMedia)
+            if (!$nextMedia)
                 $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
             else
                 $response->setContent(\Zend\Json\Json::encode(array(
-                    'response' => true, 'dataPath' => $previousMedia->getDataPath(),
-                    'logicalPath' => $previousMedia->getLogicalPath(),
+                    'response' => true, 'dataPath' => $nextMedia->getDataPath(),
+                    'logicalPath' => $nextMedia->getLogicalPath(),
                 )));
         }
         return $response;
