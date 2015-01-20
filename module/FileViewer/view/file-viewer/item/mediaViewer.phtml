@@ -25,7 +25,7 @@ jQuery(function($) {
         $("#mediaElement").attr("src","<?php echo $this->url("home") ?>" + src);
         $("#mediaElement").attr("alt",alt);
         if ($("#mediaLabel").length)
-            $("#mediaLabel").text("Mídia " + id + " de " + total);
+            $("#mediaLabel").text("Mídia " + (id + 1) + " de " + total);
     }
     
     function mediaLink(event, orientation) {
@@ -33,12 +33,25 @@ jQuery(function($) {
         var action = "get" + ucfirst(orientation) + "Media";
         $.post(action, {path: $("#mediaElement").attr("alt")},
             function(data){
-                if(data.response == true)
-                    mediaViewer(
-                        data.dataPath, data.logicalPath, data.name, data.id, data.numItems
-                    );
+                if (data.response == true) {
+                    if (data.otherPage == false) {
+                        mediaViewer(
+                            data.dataPath, data.logicalPath, data.name, data.id, data.numItems
+                        );
+                        itemChildren = $("#itemList").children();
+                        for (i = 0; i < itemChildren.length; i++) {
+                            className = itemChildren[i].className;
+                            className = className.replace('current','');
+                            itemChildren[i].className = className;
+                            if (itemChildren[i].id == 'item' + data.id)
+                                itemChildren[i].className += ' current';
+                        }
+                    }    
+                    else
+                        location.href='<?php echo $this->url("home")."media/?path=";?>' + data.logicalPath;
+                }
                 else
-                    console.log('could not add');
+                    alert('could not update');
             }, 'json');
     }
     
@@ -65,7 +78,7 @@ $(document).keydown(function(evt) {
 ?>
                     <figure>
                         <img id="mediaElement" src="<?php echo $mediaLink; ?>" alt="<?php echo $this->media->getLogicalPath(); ?>">
-                        <figcaption id="mediaLabel"><?php echo "Mídia ".$this->currentMediaIndex." de ".$numItems; ?></figcaption>
+                        <figcaption id="mediaLabel"><?php echo "Mídia ".($this->currentMediaIndex + 1)." de ".$numItems; ?></figcaption>
                     </figure>
 <?php
     }

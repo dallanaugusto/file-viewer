@@ -95,6 +95,11 @@ class MediaController extends AbstractActionController
                 $mediaIndex - 1: $numItems - 1;
             $previousMedia = $directory->getMedia($previousMediaIndex);
             $previousMediaName = $previousMedia->getName();
+            // obtendo items próximos ao item atual
+            $items = $directory->getMediasByMediaIndex($previousMediaIndex);
+            // verificando se há mudança de página
+            $pageSize = Configuration::get("custom", "pageSize");            
+            $otherPage = (int)($mediaIndex / $pageSize) != (int)($previousMediaIndex / $pageSize);
             // retornando informação
             if (!$previousMedia)
                 $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
@@ -103,7 +108,7 @@ class MediaController extends AbstractActionController
                     'response' => true, 'dataPath' => $previousMedia->getDataPath(),
                     'logicalPath' => $previousMedia->getLogicalPath(),
                     'id' => $previousMediaIndex, 'name' => $previousMediaName,
-                    'numItems' => $numItems,
+                    'numItems' => $numItems, 'otherPage' => $otherPage,
                 )));
         }
         return $response;
@@ -121,12 +126,16 @@ class MediaController extends AbstractActionController
             $media = FileDao::getNewObject($mediaPath);
             $directory = $media->getParent();
             $numItems = sizeof($directory->getMedias());
-            // obtendo mídia anterior
+            // obtendo mídia posterior
             $mediaIndex = $directory->getMediaIndex($media);
             $nextMediaIndex = $mediaIndex < $numItems - 1?
                 $mediaIndex + 1: 0;
             $nextMedia = $directory->getMedia($nextMediaIndex);
             $nextMediaName = $nextMedia->getName();
+            // verificando se há mudança de página
+            $pageSize = Configuration::get("custom", "pageSize");
+            $otherPage = 
+                (int)($mediaIndex / $pageSize) != (int)($nextMediaIndex / $pageSize);
             // retornando informação
             if (!$nextMedia)
                 $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
@@ -135,7 +144,7 @@ class MediaController extends AbstractActionController
                     'response' => true, 'dataPath' => $nextMedia->getDataPath(),
                     'logicalPath' => $nextMedia->getLogicalPath(),
                     'id' => $nextMediaIndex, 'name' => $nextMediaName,
-                    'numItems' => $numItems,
+                    'numItems' => $numItems, 'otherPage' => $otherPage,
                 )));
         }
         return $response;
